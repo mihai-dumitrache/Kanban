@@ -1,0 +1,73 @@
+﻿using HtmlAgilityPack;
+using Kanban.Models;
+using Kanban.Models.Enums;
+using Kanban.Models.ViewModels;
+using Kanban.Services;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Kanban.Controllers
+{
+    public class BoardController : Controller
+    {
+        private BoardServices _boardService;
+        private UserServices _userService;
+
+        public BoardController(BoardServices boardService, UserServices userService)
+        {
+            _boardService = boardService;
+            _userService = userService;
+        }
+        
+        public IActionResult Index(string sortOrder, string searchString)
+        {
+            Console.WriteLine("Bravo");
+            IEnumerable<Board> boards = _boardService.GetAllBoards();
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                boards = boards.Where(s => s.Title.IndexOf(searchString, StringComparison.OrdinalIgnoreCase)>=0) ;
+            }
+            return View(boards);
+        }
+
+        public IActionResult Project()
+        {            
+            Console.WriteLine("Bravo");
+            return View();
+        }
+
+        public IActionResult ViewBoard(Board board)
+        {
+            board=_boardService.GetBoardById(board.Id);
+            Console.WriteLine("Bravo");
+            return View(board);
+        }
+
+        public IActionResult EditBoard(Board board)
+        {
+            Board specificBoard = new Board();
+            specificBoard = _boardService.GetBoardById(board.Id);
+            Console.WriteLine("Bravo");
+            return View(specificBoard);
+        }
+
+
+        public IActionResult AddBoard(BoardViewModel board)
+        {
+            
+            Console.WriteLine("Bravo");
+            Board newBoard = new Board();
+            newBoard.Title = board.Title;
+            newBoard.Description = board.Description;
+            newBoard.ProjectStatus = (ProjectStatus)Enum.Parse(typeof(ProjectStatus),board.Status);
+            User user=_userService.GetUserByEmail(board.UserEmail);
+            newBoard.User=user;
+            _boardService.AddBoard(newBoard);
+            Console.WriteLine("Bravo");
+
+            return View("Views/Board/Index.cshtml");
+        }
+    }
+}
