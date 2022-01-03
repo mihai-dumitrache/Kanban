@@ -42,8 +42,12 @@ namespace Kanban.Services
         {
             Board updatedBoard = new Board();
             var context = new MyContext();
-            updatedBoard = context.Board.SingleOrDefault(x => x.Title == board.Title);
-            return board;
+            updatedBoard = context.Board.SingleOrDefault(x => x.Id == board.Id);
+            updatedBoard.Title=board.Title;
+            updatedBoard.Description=board.Description;
+            updatedBoard.ProjectStatus = board.ProjectStatus;
+            context.SaveChanges();
+            return updatedBoard;
         }
 
     }

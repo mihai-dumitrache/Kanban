@@ -1,5 +1,4 @@
-﻿using HtmlAgilityPack;
-using Kanban.Models;
+﻿using Kanban.Models;
 using Kanban.Models.Enums;
 using Kanban.Models.ViewModels;
 using Kanban.Services;
@@ -45,12 +44,23 @@ namespace Kanban.Controllers
             return View(board);
         }
 
-        public IActionResult EditBoard(Board board)
+        public IActionResult UpdateBoard(Board board)
         {
-            Board specificBoard = new Board();
-            specificBoard = _boardService.GetBoardById(board.Id);
             Console.WriteLine("Bravo");
-            return View(specificBoard);
+            board = _boardService.GetBoardById(board.Id);
+            return View(board);
+        }
+
+        public IActionResult EditBoard(Board board, string sortOrder, string searchString)
+        {
+            Console.WriteLine("Bravo");
+            _boardService.EditBoard(board);
+            IEnumerable<Board> boardList = _boardService.GetAllBoards();
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                boardList = boardList.Where(s => s.Title.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+            return View("Views/Board/Index.cshtml",boardList);
         }
 
 
