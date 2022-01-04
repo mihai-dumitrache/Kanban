@@ -1,4 +1,5 @@
 using Kanban.Services;
+using Kanban.Services.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -26,8 +27,8 @@ namespace Kanban
         {
 
             services.AddControllersWithViews();
-            services.AddScoped<BoardServices>();
-            services.AddScoped<UserServices>();
+            services.AddScoped<IBoardServices,BoardServices>();
+            services.AddScoped<IUserServices,UserServices>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

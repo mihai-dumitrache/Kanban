@@ -47,6 +47,9 @@
             <i class="fas fa-edit" title="Edit" onclick="location.href='@Url.Action("UpdateBoard","Board",new {id=item.Id})'"></i>
         </td>
         <td>
+            <i class="fas fa-trash-alt" title="Delete" onclick="location.href='@Url.Action("DeleteBoard","Board",new {id=item.Id})'"></i>
+        </td>
+        <td>
 
         </td>
     </tr>

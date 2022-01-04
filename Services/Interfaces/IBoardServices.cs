@@ -11,5 +11,7 @@ namespace Kanban.Services.Interfaces
         Board GetBoardById(int boardId);
 
         Board EditBoard(Board board);
+
+        public void DeleteBoard(Board board);
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Kanban.Models;
 using Kanban.Models.Enums;
 using Kanban.Models.ViewModels;
-using Kanban.Services;
+using Kanban.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -11,10 +11,10 @@ namespace Kanban.Controllers
 {
     public class BoardController : Controller
     {
-        private BoardServices _boardService;
-        private UserServices _userService;
+        private IBoardServices _boardService;
+        private IUserServices _userService;
 
-        public BoardController(BoardServices boardService, UserServices userService)
+        public BoardController(IBoardServices boardService, IUserServices userService)
         {
             _boardService = boardService;
             _userService = userService;
@@ -63,6 +63,17 @@ namespace Kanban.Controllers
             return View("Views/Board/Index.cshtml",boardList);
         }
 
+        public IActionResult DeleteBoard(Board board, string sortOrder, string searchString)
+        {
+            _boardService.DeleteBoard(board);
+            Console.WriteLine("Bravo");
+            IEnumerable<Board> boardList = _boardService.GetAllBoards();
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                boardList = boardList.Where(s => s.Title.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+            return RedirectToAction("Index");
+        }
 
         public IActionResult AddBoard(BoardViewModel board)
         {
@@ -76,8 +87,7 @@ namespace Kanban.Controllers
             newBoard.User=user;
             _boardService.AddBoard(newBoard);
             Console.WriteLine("Bravo");
-
-            return View("Views/Board/Index.cshtml");
+            return RedirectToAction("Index");
         }
     }
 }

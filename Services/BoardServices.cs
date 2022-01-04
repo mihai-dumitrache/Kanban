@@ -50,5 +50,12 @@ namespace Kanban.Services
             return updatedBoard;
         }
 
+        public void DeleteBoard(Board board)
+        {
+            var context = new MyContext();
+            context.Entry(board).State = EntityState.Deleted;
+            context.SaveChanges();
+        }
+
     }
 }
