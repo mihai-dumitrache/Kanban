@@ -15,3 +15,6 @@ Board Name: @Html.DisplayFor(model => model.Title) <br />
 Board Description: @Html.DisplayFor(model => model.Description) <br />
 Board Status: @Html.DisplayFor(model => model.ProjectStatus) <br />
 Board Creator: @Html.DisplayFor(model => model.User.Name) <br />
+
+
+<button type="submit" style="background-color: #4CAF60" onclick="location.href='@Url.Action("Index","Task",new {id=Model.Id})'" >Add Task</button>

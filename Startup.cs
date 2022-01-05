@@ -29,6 +29,7 @@ namespace Kanban
             services.AddControllersWithViews();
             services.AddScoped<IBoardServices,BoardServices>();
             services.AddScoped<IUserServices,UserServices>();
+            services.AddScoped<ITaskServices, TaskServices>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
