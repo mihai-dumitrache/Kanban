@@ -15,6 +15,8 @@ namespace Kanban.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Title { get; set; }
+
+        public List<Task> TasksList { get; set; }
         public string Description { get; set;}
 
         public User User { get; set; }

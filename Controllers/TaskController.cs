@@ -34,10 +34,28 @@ namespace Kanban.Controllers
             newTask.Title = task.Title;
             newTask.Description = task.Description;
             newTask.Responsible=task.Responsible;
+            newTask.Progress = task.Progress;
             //newTask.Priority = (TaskPriority)Enum.Parse(typeof(TaskPriority), task.Priority);
             _taskService.AddTask(newTask);
             Console.WriteLine("Bravo");
             return RedirectToAction("ViewBoard", "Board",newTask.Board);
+        }
+        public IActionResult ViewTask(Task task)
+        {
+            task = _taskService.GetTaskById(task.Id);
+            return View(task);
+        }
+        public IActionResult EditTask(Task task)
+        {
+            task = _taskService.EditTask(task);
+            task.Board.TasksList = _taskService.GetTasksByBoardId(task.Board);
+            return View("Views/Board/ViewBoard.cshtml",task.Board);
+        }
+
+        public IActionResult UpdateTask(Task task)
+        {
+            task = _taskService.GetTaskById(task.Id);
+            return View(task);
         }
     }
 }

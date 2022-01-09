@@ -13,11 +13,13 @@ namespace Kanban.Controllers
     {
         private IBoardServices _boardService;
         private IUserServices _userService;
+        private ITaskServices _taskService;
 
-        public BoardController(IBoardServices boardService, IUserServices userService)
+        public BoardController(IBoardServices boardService, IUserServices userService, ITaskServices taskService)
         {
             _boardService = boardService;
             _userService = userService;
+            _taskService = taskService;
         }
         
         public IActionResult Index(string sortOrder, string searchString)
@@ -40,6 +42,7 @@ namespace Kanban.Controllers
         public IActionResult ViewBoard(Board board)
         {
             board=_boardService.GetBoardById(board.Id);
+            board.TasksList = _taskService.GetTasksByBoardId(board);
             Console.WriteLine("Bravo");
             return View(board);
         }
