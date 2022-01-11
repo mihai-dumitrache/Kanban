@@ -8,7 +8,7 @@ namespace Kanban.Models
 {
     public class MyContext : DbContext
     {
-        public DbSet<Board> Board { get; set; }
+        public DbSet<Board> Boards { get; set; }
         public DbSet<User> Users { get; set; }
 
         public DbSet<Task> Tasks { get; set; }

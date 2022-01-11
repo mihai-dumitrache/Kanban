@@ -23,7 +23,7 @@ namespace Kanban.Services
         public IEnumerable<Board> GetAllBoards()
         {
             var context= new MyContext();
-            return context.Board.Include(x => x.User).ToList();
+            return context.Boards.Include(x => x.User).ToList();
         }
 
         public Board GetBoardById(int boardId)
@@ -31,7 +31,7 @@ namespace Kanban.Services
             
             Board board=new Board();
             var context=new MyContext();
-            board = context.Board
+            board = context.Boards
                                    .Include(x => x.User)
                                    .Where(x => x.Id == boardId)
                                    .FirstOrDefault<Board>();
@@ -42,7 +42,7 @@ namespace Kanban.Services
         {
             Board updatedBoard = new Board();
             var context = new MyContext();
-            updatedBoard = context.Board.SingleOrDefault(x => x.Id == board.Id);
+            updatedBoard = context.Boards.SingleOrDefault(x => x.Id == board.Id);
             updatedBoard.Title=board.Title;
             updatedBoard.Description=board.Description;
             updatedBoard.ProjectStatus = board.ProjectStatus;
