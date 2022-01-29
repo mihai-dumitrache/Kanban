@@ -8,6 +8,8 @@ namespace Kanban.Services.Interfaces
     {
         int AddBoard(Board board);
         public IEnumerable<Board> GetAllBoards();
+
+        public IEnumerable<Board> GetBoardsByUser(User user);
         Board GetBoardById(int boardId);
 
         Board EditBoard(Board board);

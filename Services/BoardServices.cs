@@ -9,30 +9,38 @@ namespace Kanban.Services
 {
     public class BoardServices : IBoardServices
     {
+        private MyContext _context;
+
+        public BoardServices()
+        {
+            _context = new MyContext();
+        }
+
         public int AddBoard(Board board)
         {
-                var context=new MyContext();
-                
-            
-                context.Add<Board>(board);
-                context.Entry(board.User).State = EntityState.Detached;
-                context.SaveChanges(); 
+                _context.Add<Board>(board);
+                _context.Entry(board.CreatedByUser).State = EntityState.Detached;
+                _context.SaveChanges(); 
                 return 0;            
         }
 
         public IEnumerable<Board> GetAllBoards()
         {
-            var context= new MyContext();
-            return context.Boards.Include(x => x.User).ToList();
+            return _context.Boards.Include(x => x.CreatedByUser).ToList();
+        }
+
+        public IEnumerable<Board> GetBoardsByUser(User user)
+        {
+            IEnumerable <Board> boardsByUser= _context.UserBoards.Where(x => x.User==user).Select(x => x.Board).ToList();
+            return boardsByUser;
         }
 
         public Board GetBoardById(int boardId)
         {
             
             Board board=new Board();
-            var context=new MyContext();
-            board = context.Boards
-                                   .Include(x => x.User)
+            board = _context.Boards
+                                   .Include(x => x.CreatedByUser)
                                    .Where(x => x.Id == boardId)
                                    .FirstOrDefault<Board>();
             return board;
@@ -41,20 +49,18 @@ namespace Kanban.Services
         public Board EditBoard(Board board)
         {
             Board updatedBoard = new Board();
-            var context = new MyContext();
-            updatedBoard = context.Boards.SingleOrDefault(x => x.Id == board.Id);
+            updatedBoard = _context.Boards.SingleOrDefault(x => x.Id == board.Id);
             updatedBoard.Title=board.Title;
             updatedBoard.Description=board.Description;
             updatedBoard.ProjectStatus = board.ProjectStatus;
-            context.SaveChanges();
+            _context.SaveChanges();
             return updatedBoard;
         }
 
         public void DeleteBoard(Board board)
         {
-            var context = new MyContext();
-            context.Entry(board).State = EntityState.Deleted;
-            context.SaveChanges();
+            _context.Entry(board).State = EntityState.Deleted;
+            _context.SaveChanges();
         }
 
     }

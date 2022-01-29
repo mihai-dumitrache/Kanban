@@ -13,13 +13,19 @@ namespace Kanban.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
+        
         public int Id { get; set; }
         public string Title { get; set; }
 
         public List<Task> TasksList { get; set; }
+
+        //public List<User> UsersList { get; set; }
+
+        public List<UserBoard> UserBoards { get; set; }
         public string Description { get; set;}
 
-        public User User { get; set; }
+        public User CreatedByUser { get; set; }
 
         public ProjectStatus ProjectStatus { get; set; }
     }

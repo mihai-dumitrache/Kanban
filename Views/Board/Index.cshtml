@@ -1,4 +1,5 @@
 ﻿@using Kanban.Models
+@using Microsoft.AspNetCore.Http
 @model IEnumerable<Kanban.Models.Board>
 
 @*
@@ -6,20 +7,30 @@
 *@
 <script src="https://kit.fontawesome.com/d5cb6dbe34.js" crossorigin="anonymous"></script>
 
+<div>
+Logged User: @Context.Session.GetString("_Email") <button type="button" onclick="location.href='@Url.Action("LogOutUser","User")'" style="background-color: #4CAF60">Logout</button>
+</div>
+
 @{
     ViewData["Title"] = "Board";
 }
 <h1>@ViewData["Title"]</h1>
 
-<p> <font size="+3">Am facut ceva util in programul asta</font></p>
+
 <button type="button" onclick="location.href='@Url.Action("Project","Board")'" style="background-color: #4CAF60">Add Board</button>
 
-@using (Html.BeginForm())
+@*@using (Html.BeginForm())
 {
     <p>
         Find by Board title: @Html.TextBox("SearchString")  
-        <input type="submit" value="Search" /></p>
-}
+        <input type="submit" value="Search" />
+    </p>
+}*@
+
+<form asp-controller="Board" asp-action="Index" method='GET'>
+    <input type='text' name='searchString' />
+    <input type='submit' name='submit' value='submit'/>
+</form>
 
 <table class="table">
     <tr>
@@ -56,4 +67,3 @@
 }
 
 </table>
-

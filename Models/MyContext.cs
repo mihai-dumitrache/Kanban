@@ -13,6 +13,8 @@ namespace Kanban.Models
 
         public DbSet<Task> Tasks { get; set; }
 
+        public DbSet<UserBoard> UserBoards { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Data Source=. \\SQLEXPRESS;Initial Catalog=Kanban;Integrated Security=True");

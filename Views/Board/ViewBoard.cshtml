@@ -1,4 +1,5 @@
 ﻿@using Kanban.Models
+@using Microsoft.AspNetCore.Http
 @model Kanban.Models.Board
 
 @*
@@ -6,17 +7,37 @@
 *@
 
 <script src="https://kit.fontawesome.com/d5cb6dbe34.js" crossorigin="anonymous"></script>
+<script>
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function drag(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function drop(ev) {
+  ev.preventDefault();
+  var data = ev.dataTransfer.getData("text");
+  ev.target.appendChild(document.getElementById(data));
+}
+</script>
 @*@{
     ViewData["Title"] = "Board";
 }*@
+
+<div>
+Logged User: @Context.Session.GetString("_Email")
+</div>
 
 <h1>@ViewData["Board"]</h1>
 
 Board Name: @Html.DisplayFor(model => model.Title) <br />
 Board Description: @Html.DisplayFor(model => model.Description) <br />
 Board Status: @Html.DisplayFor(model => model.ProjectStatus) <br />
-Board Creator: @Html.DisplayFor(model => model.User.Name) <br />
+Board Creator: @Html.DisplayFor(model => model.CreatedByUser.Name) <br />
 @Html.HiddenFor(model => model.Id)
+@Html.HiddenFor(model => model.UserBoards)
 
 <div class="row" style="width:1500px">
 
@@ -27,7 +48,7 @@ Board Creator: @Html.DisplayFor(model => model.User.Name) <br />
       @if ((int)item.Progress==0)
         {
          <div class="row">
-            <div class="col" style="border: thin solid black">@Html.DisplayFor(modelitem => item.Title)<br />
+            <div class="col" style="border: thin solid black" ondrop="drop(event)" ondragover="allowDrop(event)" draggable="true" ondragstart="drag(event)">@Html.DisplayFor(modelitem => item.Title)<br />
                      <p>&emsp;&emsp;&emsp;- @Html.DisplayFor(modelitem => item.Description)</p>
                      <i class="fas fa-info-circle" title="View Details" onclick="location.href='@Url.Action("ViewTask","Task",new {id=item.Id})'"></i>
             </div>
@@ -103,3 +124,17 @@ Board Creator: @Html.DisplayFor(model => model.User.Name) <br />
 </div>
 
 <button type="submit" style="background-color: #4CAF60" onclick="location.href='@Url.Action("Index","Task",new {id=Model.Id})'" >Add Task</button>
+
+<form asp-controller="User" asp-action="AddUserToBoard" method="post">
+    <div class="form-group">
+        <label name="userEmail" class="control-label">Add user to board</label>
+        <input name="userEmail" class="form-control" type="email" placeholder="Insert User Email" id="userEmail"  />
+        <hr><br />
+        </div>
+@Html.HiddenFor(model => model.Id)
+<div class="has-error">
+            @Html.ValidationMessage("UserNotFound")
+            @Html.ValidationMessage("UserHasAccess")
+            </div>
+<button type="submit" class="btn btn-default">Add user</button>
+</form>

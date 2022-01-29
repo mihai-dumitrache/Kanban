@@ -4,14 +4,16 @@ using Kanban.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Kanban.Migrations
 {
     [DbContext(typeof(MyContext))]
-    partial class MyContextModelSnapshot : ModelSnapshot
+    [Migration("20220124122429_UserBoard_model_added")]
+    partial class UserBoard_model_added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,9 +28,6 @@ namespace Kanban.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CreatedByUserId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -38,9 +37,12 @@ namespace Kanban.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedByUserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Boards");
                 });
@@ -117,38 +119,13 @@ namespace Kanban.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("Kanban.Models.UserBoard", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("BoardId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BoardId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("UserBoards");
-                });
-
             modelBuilder.Entity("Kanban.Models.Board", b =>
                 {
-                    b.HasOne("Kanban.Models.User", "CreatedByUser")
+                    b.HasOne("Kanban.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("CreatedByUserId");
+                        .HasForeignKey("UserId");
 
-                    b.Navigation("CreatedByUser");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Kanban.Models.Task", b =>
@@ -172,26 +149,9 @@ namespace Kanban.Migrations
                     b.Navigation("Responsible");
                 });
 
-            modelBuilder.Entity("Kanban.Models.UserBoard", b =>
-                {
-                    b.HasOne("Kanban.Models.Board", "Board")
-                        .WithMany("UserBoards")
-                        .HasForeignKey("BoardId");
-
-                    b.HasOne("Kanban.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Board");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Kanban.Models.Board", b =>
                 {
                     b.Navigation("TasksList");
-
-                    b.Navigation("UserBoards");
                 });
 #pragma warning restore 612, 618
         }

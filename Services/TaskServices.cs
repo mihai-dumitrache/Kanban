@@ -8,13 +8,19 @@ namespace Kanban.Services
 {
     public class TaskServices : ITaskServices
     {
+
+        private MyContext _context;
+
+        public TaskServices()
+        {
+            _context = new MyContext();
+        }
         public int AddTask(Task task)
         {
-            var context = new MyContext();
-            context.Add<Task>(task);
-            context.Entry(task.Board.User).State = EntityState.Detached;
-            context.Entry(task.Board).State = EntityState.Detached;
-            context.SaveChanges();
+            _context.Add<Task>(task);
+            _context.Entry(task.Board.CreatedByUser).State = EntityState.Detached;
+            _context.Entry(task.Board).State = EntityState.Detached;
+            _context.SaveChanges();
             return 0;
         }
 
@@ -22,29 +28,26 @@ namespace Kanban.Services
 
         {
             List<Task> tasksList = new List<Task>();
-            var context = new MyContext();
-            tasksList = context.Tasks.Where(x => x.Board==board).ToList();
+            tasksList = _context.Tasks.Where(x => x.Board==board).ToList();
             return tasksList;
         }
 
         public Task GetTaskById(int id)
         {
             Task task = new Task();
-            var context = new MyContext();
-            task = context.Tasks.Include(y => y.Board).SingleOrDefault(x => x.Id == id);
+            task = _context.Tasks.Include(y => y.Board).SingleOrDefault(x => x.Id == id);
             return task;
         }
 
         public Task EditTask(Task task)
         {
             Task updatedTask = new Task();
-            var context = new MyContext();
-            updatedTask = context.Tasks.Include(y => y.Board).SingleOrDefault(x => x.Id == task.Id);
+            updatedTask = _context.Tasks.Include(y => y.Board).SingleOrDefault(x => x.Id == task.Id);
             updatedTask.Title = task.Title;
             updatedTask.Description = task.Description;
             updatedTask.Priority=task.Priority;
             updatedTask.Progress = task.Progress;
-            context.SaveChanges();
+            _context.SaveChanges();
             return updatedTask;
         }
 

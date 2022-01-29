@@ -1,11 +1,45 @@
-﻿@{
+﻿@using Kanban.Models
+@model Kanban.Models.User
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    <button type="button" onclick="location.href='@Url.Action("Index","Board")'" style="background-color: #4CAF50">Board</button>
     
 </div>
+
+<form asp-controller="User" asp-action="LoginUser" method="post">
+    <div class="container">
+
+        <h1>Login User</h1>
+       
+        <hr>
+
+
+        <div class="form-group">
+        <label asp-for="EmailAdress" class="control-label"><b>User E-mail</b></label>
+        <input asp-for="EmailAdress" class="form-control" data-val="true" data-val-email="invalid user" type="text" id="txtEmailAdress" /><br />
+        
+        <div class="has-error">
+            @Html.ValidationMessage("InvalidUser")
+        </div>
+
+        </div>
+
+        <div class="form-group">
+        <label asp-for="Password" class="control-label"><b>Password</b></label>
+        <input asp-for="Password" class="form-control" type="password" id="txtPassword" />
+        <hr><br />
+        </div>
+        <div class="has-error">
+            @Html.ValidationMessage("InvalidPassword")
+        </div>
+    </div>
+
+<button type="submit" style="background-color: #BBBB00" class="btn btn-default">Login user</button>
+
+</form>
+
 

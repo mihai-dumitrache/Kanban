@@ -4,14 +4,16 @@ using Kanban.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Kanban.Migrations
 {
     [DbContext(typeof(MyContext))]
-    partial class MyContextModelSnapshot : ModelSnapshot
+    [Migration("20220124130834_userboard_model_update_2")]
+    partial class userboard_model_update_2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -26,9 +28,6 @@ namespace Kanban.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CreatedByUserId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
@@ -38,9 +37,12 @@ namespace Kanban.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatedByUserId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Boards");
                 });
@@ -127,9 +129,6 @@ namespace Kanban.Migrations
                     b.Property<int?>("BoardId")
                         .HasColumnType("int");
 
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("bit");
-
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
 
@@ -139,16 +138,16 @@ namespace Kanban.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserBoards");
+                    b.ToTable("UserBoard");
                 });
 
             modelBuilder.Entity("Kanban.Models.Board", b =>
                 {
-                    b.HasOne("Kanban.Models.User", "CreatedByUser")
+                    b.HasOne("Kanban.Models.User", "User")
                         .WithMany()
-                        .HasForeignKey("CreatedByUserId");
+                        .HasForeignKey("UserId");
 
-                    b.Navigation("CreatedByUser");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Kanban.Models.Task", b =>

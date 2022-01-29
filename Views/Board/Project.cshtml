@@ -1,4 +1,5 @@
 ﻿@using Kanban.Models.ViewModels
+@using Microsoft.AspNetCore.Http
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
@@ -8,7 +9,9 @@
 }
 <h1>@ViewData["Title"]</h1>
 
-
+<div>
+Logged User: @Context.Session.GetString("_Email")
+</div>
 
 @*<form action="action_page.php">*@
 @*action=nume metoda din controller*@
@@ -41,15 +44,15 @@
         <hr><br />
         </div>
 
-        <div class="form-group">
-        <label asp-for="UserEmail" class="control-label"><b>Select Owner</b></label>
-        <input asp-for="UserEmail" class="form-control" type="text" placeholder="Select Owner" id="txtOwner" />
-        <hr><br />
-        </div>
+        
 
-        <button type="submit" class="btn btn-default">Add project</button>
+        
+
+        <button type="submit" class="btn btn-default">Add board</button>
 
     </div>
 
 
 </form>
+
+
