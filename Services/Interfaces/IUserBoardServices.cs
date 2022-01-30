@@ -8,5 +8,7 @@ namespace Kanban.Services.Interfaces
         public bool CheckUserAccessOnBoard(UserBoard userboard);
 
         public bool CheckUserOnUserBoards(UserBoard userboard);
+
+        public bool CheckIfAdmin(string userEmail, int boardId);
     }
 }

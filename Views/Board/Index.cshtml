@@ -19,14 +19,6 @@ Logged User: @Context.Session.GetString("_Email") <button type="button" onclick=
 
 <button type="button" onclick="location.href='@Url.Action("Project","Board")'" style="background-color: #4CAF60">Add Board</button>
 
-@*@using (Html.BeginForm())
-{
-    <p>
-        Find by Board title: @Html.TextBox("SearchString")  
-        <input type="submit" value="Search" />
-    </p>
-}*@
-
 <form asp-controller="Board" asp-action="Index" method='GET'>
     <input type='text' name='searchString' />
     <input type='submit' name='submit' value='submit'/>

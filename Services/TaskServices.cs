@@ -20,6 +20,7 @@ namespace Kanban.Services
             _context.Add<Task>(task);
             _context.Entry(task.Board.CreatedByUser).State = EntityState.Detached;
             _context.Entry(task.Board).State = EntityState.Detached;
+            _context.Entry(task.Responsible).State = EntityState.Detached;
             _context.SaveChanges();
             return 0;
         }
@@ -35,7 +36,7 @@ namespace Kanban.Services
         public Task GetTaskById(int id)
         {
             Task task = new Task();
-            task = _context.Tasks.Include(y => y.Board).SingleOrDefault(x => x.Id == id);
+            task = _context.Tasks.Include(y => y.Board).Include(y => y.CreatedBy).SingleOrDefault(x => x.Id == id);
             return task;
         }
 

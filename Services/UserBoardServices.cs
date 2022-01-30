@@ -11,10 +11,13 @@ namespace Kanban.Services
     {
         private MyContext _context;
         private IUserServices _userService;
-        public UserBoardServices(IUserServices userService)
+        private IBoardServices _boardService;
+
+        public UserBoardServices(IUserServices userService, IBoardServices boardService)
         {
             _context = new MyContext();
             _userService = userService;
+            _boardService = boardService;
         }
         public int AddUserBoard(UserBoard userboard)
         {
@@ -33,15 +36,16 @@ namespace Kanban.Services
 
         public bool CheckUserAccessOnBoard(UserBoard userboard)
         {
-            if (_userService.GetUserByEmail(userboard.User.EmailAdress)!=null )
+            if (_userService.GetUserByEmail(userboard.User.EmailAdress) != null)
             {
-                if (CheckUserOnUserBoards(userboard)==false)
+                if (CheckUserOnUserBoards(userboard) == false)
                 {
                     return true;
                 }
                 return false;
             }
             return false;
+
         }
 
         public bool CheckUserOnUserBoards(UserBoard userboard)
@@ -54,6 +58,22 @@ namespace Kanban.Services
             if (userboards == null)
             { return false; }
             return true;
+        }
+
+        public bool CheckIfAdmin(string userEmail, int boardId)
+        {
+            UserBoard userBoard = new UserBoard();
+            userBoard.User =_userService.GetUserByEmail(userEmail);
+            userBoard.Board = _boardService.GetBoardById(boardId);
+            userBoard = _context.UserBoards
+                                            .Where(x => x.User == userBoard.User)
+                                            .Where(x => x.Board == userBoard.Board)
+                                            .FirstOrDefault<UserBoard>();
+            if (userBoard.IsAdmin==true)
+            {
+                return true;
+            }
+            return false;
         }
 
     }

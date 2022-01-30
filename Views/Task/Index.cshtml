@@ -48,9 +48,12 @@
         </div>
 
         <div class="form-group">
-        <label asp-for="Responsible" class="control-label"><b>Task Responsible</b></label>
-        <input asp-for="Responsible" class="form-control" type="text" placeholder="Insert Task Responsible" id="txtResponsible" />
+        <label asp-for="Responsible.EmailAdress" class="control-label"><b>Task Responsible</b></label>
+        <input asp-for="Responsible.EmailAdress" class="form-control" type="text" placeholder="Insert Task Responsible" id="txtResponsible" />
         <hr><br />
+        <div class="has-error">
+            @Html.ValidationMessage("UserNotOnBoard")
+        </div>
         </div>
 
         @Html.HiddenFor(model => model.Board.Id)

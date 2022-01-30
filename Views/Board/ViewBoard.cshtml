@@ -1,5 +1,9 @@
 ﻿@using Kanban.Models
 @using Microsoft.AspNetCore.Http
+@using Kanban.Services
+@using Kanban.Services.Interfaces
+@inject Kanban.Services.Interfaces.IUserServices _userService
+@inject Kanban.Services.Interfaces.IBoardServices _boardService
 @model Kanban.Models.Board
 
 @*
@@ -125,6 +129,14 @@ Board Creator: @Html.DisplayFor(model => model.CreatedByUser.Name) <br />
 
 <button type="submit" style="background-color: #4CAF60" onclick="location.href='@Url.Action("Index","Task",new {id=Model.Id})'" >Add Task</button>
 
+@{
+    var objectTest=new Kanban.Services.UserBoardServices(_userService,_boardService);
+}
+
+
+@if (objectTest.CheckIfAdmin(@Context.Session.GetString("_Email"),@Model.Id)==true)
+
+{
 <form asp-controller="User" asp-action="AddUserToBoard" method="post">
     <div class="form-group">
         <label name="userEmail" class="control-label">Add user to board</label>
@@ -138,3 +150,6 @@ Board Creator: @Html.DisplayFor(model => model.CreatedByUser.Name) <br />
             </div>
 <button type="submit" class="btn btn-default">Add user</button>
 </form>
+}
+else
+{}
