@@ -78,6 +78,7 @@ namespace Kanban.Controllers
             {
                 HttpContext.Session.SetString("_Email", user.EmailAdress);
                 HttpContext.Session.SetString("_Password", user.Password);
+                HttpContext.Session.SetString("_Name", _userService.GetUserByEmail(user.EmailAdress).Name);
             }
 
             IEnumerable<Board> boards = _boardService.GetBoardsByUser(_userService.GetUserByEmail(HttpContext.Session.GetString("_Email")));
@@ -101,7 +102,7 @@ namespace Kanban.Controllers
                     ModelState.AddModelError("UserHasAccess", "User has already access on board!");
                     return View("Views/Board/ViewBoard.cshtml", board);
                 }
-                //de adaugat eroare ca userul deja are acces in Board
+                
                 return View("Views/Board/ViewBoard.cshtml", board);
             }
             ModelState.AddModelError("UserNotFound", "User not found");
@@ -112,6 +113,7 @@ namespace Kanban.Controllers
         {
             HttpContext.Session.SetString("_Email", String.Empty);
             HttpContext.Session.SetString("_Password", String.Empty);
+            HttpContext.Session.SetString("_Name", String.Empty);
             return View("Views/Home/Index.cshtml");
         }
 

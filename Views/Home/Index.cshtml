@@ -6,21 +6,21 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    <h1 class="display-4" align="center">Kanban</h1>
     
 </div>
 
 <form asp-controller="User" asp-action="LoginUser" method="post">
     <div class="container">
 
-        <h1>Login User</h1>
+        <p style="font-size:150%;position:absolute;top:25%;left:0%;right:0%;text-align:center;">Login User</p>
        
-        <hr>
+        
 
 
         <div class="form-group">
-        <label asp-for="EmailAdress" class="control-label"><b>User E-mail</b></label>
-        <input asp-for="EmailAdress" class="form-control" data-val="true" data-val-email="invalid user" type="text" id="txtEmailAdress" /><br />
+        <label asp-for="EmailAdress" class="control-label" style="font-size:90%;position:absolute;top:32%;left:0%;right:4%;text-align:center;" ><b>User E-mail:    <input asp-for="EmailAdress" class="form-control" data-val="true" data-val-email="invalid user" type="text" id="txtEmailAdress" style="display:inline-block;width:20%;height:60%;"/><br /></b></label>
+        @*<input asp-for="EmailAdress" class="form-control" data-val="true" data-val-email="invalid user" type="text" id="txtEmailAdress" style="display:inline-block;width:50%"/><br />*@
         
         <div class="has-error">
             @Html.ValidationMessage("InvalidUser")
@@ -29,16 +29,16 @@
         </div>
 
         <div class="form-group">
-        <label asp-for="Password" class="control-label"><b>Password</b></label>
-        <input asp-for="Password" class="form-control" type="password" id="txtPassword" />
-        <hr><br />
+        <label asp-for="Password" class="control-label" style="font-size:90%;position:absolute;top:38.5%;left:0%;right:3%;text-align:center;"><b>Password:         <input asp-for="Password" class="form-control" type="password" id="txtPassword" style="display:inline-block;width:20%;height:60%"/></b></label>
+        @*<input asp-for="Password" class="form-control" type="password" id="txtPassword" />*@
+        <br />
         </div>
         <div class="has-error">
             @Html.ValidationMessage("InvalidPassword")
         </div>
     </div>
 
-<button type="submit" style="background-color: #BBBB00" class="btn btn-default">Login user</button>
+<button type="submit" style="background-color: #f0e68c;font-size:90%;position:absolute;top:45%;left:48%;right:0%;text-align:center;border-radius:50%" class="btn btn-default" >Login</button>
 
 </form>
 
