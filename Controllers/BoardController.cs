@@ -4,6 +4,7 @@ using Kanban.Models.ViewModels;
 using Kanban.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using X.PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,18 +28,27 @@ namespace Kanban.Controllers
         }
 
 
-        public IActionResult Index(string sortOrder, string searchString)
+        public IActionResult Index(string sortOrder, string searchString,int? page)
         {
-            if(HttpContext.Session.GetString("_Email")!=String.Empty && HttpContext.Session.GetString("_Email") != null)
-                    {
+            if (HttpContext.Session.GetString("_Email") != String.Empty && HttpContext.Session.GetString("_Email") != null)
+            {
                 Console.WriteLine("Bravo");
-                IEnumerable<Board> boards = _boardService.GetBoardsByUser(_userService.GetUserByEmail(HttpContext.Session.GetString("_Email")));
+                
+                int pageIndex = 1;
+                int pageSize = 10;
+                pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
+                IPagedList<Board> boards = _boardService.GetBoardsByUser(_userService.GetUserByEmail(HttpContext.Session.GetString("_Email")));
+
+
                 if (!String.IsNullOrEmpty(searchString))
                 {
-                    boards = boards.Where(s => s.Title.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) >= 0);
+                    boards = boards.Where(s => s.Title.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) >= 0).ToPagedList();
                 }
-                return View(boards);
-                    }
+
+                int pageNumber = (page ?? 1);
+
+                return View(boards.ToPagedList(pageIndex,pageSize));
+            }
             return View("Views/Home/Index.cshtml");
         }
 

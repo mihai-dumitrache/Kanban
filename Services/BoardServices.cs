@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using X.PagedList;
 
 namespace Kanban.Services
 {
@@ -29,9 +30,9 @@ namespace Kanban.Services
             return _context.Boards.Include(x => x.CreatedByUser).ToList();
         }
 
-        public IEnumerable<Board> GetBoardsByUser(User user)
+        public IPagedList<Board> GetBoardsByUser(User user)
         {
-            IEnumerable <Board> boardsByUser= _context.UserBoards.Where(x => x.User==user).Select(x => x.Board).ToList();
+            IPagedList<Board> boardsByUser= _context.UserBoards.Where(x => x.User==user).Select(x => x.Board).ToPagedList();
             return boardsByUser;
         }
 

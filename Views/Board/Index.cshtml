@@ -1,6 +1,10 @@
 ﻿@using Kanban.Models
 @using Microsoft.AspNetCore.Http
-@model IEnumerable<Kanban.Models.Board>
+@using X.PagedList.Mvc.Core
+@using X.PagedList
+
+@model IPagedList<Kanban.Models.Board>
+
 
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,14 +14,15 @@
 
 
 @{
-    ViewData["Title"] = "Board";
+    ViewData["Title"] = "Boards";
 }
 <h1>@ViewData["Title"]</h1>
 
 
-<button type="button" onclick="location.href='@Url.Action("Project","Board")'" style="background-color: #4CAF60">Add Board</button>
+<button type="button" onclick="location.href='@Url.Action("Project","Board")'" style="background-color: #ff8c00;font-size:110%;height:7%;position:absolute;top:10%;left:88%;right:0%;text-align:center;border-radius:50%">Add New Board</button>
 
 <form asp-controller="Board" asp-action="Index" method='GET'>
+    <label>Search for a board:</label>
     <input type='text' name='searchString' />
     <input type='submit' name='submit' value='submit'/>
 </form>
@@ -25,10 +30,10 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Title)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().Title)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ProjectStatus)
+            @Html.DisplayNameFor(model => model.FirstOrDefault().ProjectStatus)
         </th>
            
     </tr>
@@ -57,3 +62,10 @@
 }
 
 </table>
+
+
+
+    <br />
+
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+@Html.PagedListPager( Model, page => Url.Action("Index", new { page }) )

@@ -83,7 +83,8 @@ namespace Kanban.Controllers
 
             IEnumerable<Board> boards = _boardService.GetBoardsByUser(_userService.GetUserByEmail(HttpContext.Session.GetString("_Email")));
 
-            return View("Views/Board/Index.cshtml", boards);
+            return RedirectToAction("Index", "Board");
+            //return View("Views/Board/Index.cshtml", boards);
         }
 
        

@@ -1,6 +1,7 @@
 ﻿using Kanban.Models;
 using System.Collections.Generic;
 using System.Linq;
+using X.PagedList;
 
 namespace Kanban.Services.Interfaces
 {
@@ -9,7 +10,7 @@ namespace Kanban.Services.Interfaces
         int AddBoard(Board board);
         public IEnumerable<Board> GetAllBoards();
 
-        public IEnumerable<Board> GetBoardsByUser(User user);
+        public IPagedList<Board> GetBoardsByUser(User user);
         Board GetBoardById(int boardId);
 
         Board EditBoard(Board board);
