@@ -57,7 +57,10 @@ namespace Kanban.Services
 
         public bool CheckPassword(string userPassword)
         {
-            if (userPassword.Length > 7 && userPassword.Count(char.IsLetter) >= 1 && userPassword.Count(char.IsDigit) >= 1 && userPassword.Length - userPassword.Count(char.IsLetter) - userPassword.Count(char.IsDigit) >= 1)
+            if (userPassword==null)
+            { return false; }
+            
+            if (userPassword.Length > 7 && userPassword.Count(char.IsLetter) >= 1 && userPassword.Count(char.IsDigit) >= 1 && userPassword.Length - userPassword.Count(char.IsLetter) - userPassword.Count(char.IsDigit) >= 1 && userPassword!=String.Empty)
             {
                 return true;
             }

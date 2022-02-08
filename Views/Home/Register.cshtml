@@ -11,9 +11,6 @@
 <form asp-controller="User" asp-action="AddUser" method="post">
     <div class="container">
 
-        <h1>Add new task</h1>
-        <p>Please fill in this form to create a new task</p>
-        <hr>
 
         <div class="form-group">
         <label asp-for="Name" class="control-label"><b>User Name</b></label>
@@ -48,7 +45,7 @@
 
         <div class="form-group">
         <label asp-for="Position" class="control-label"><b>Position</b></label>
-        <input asp-for="Position" class="form-control" type="text" id="txtPosition" />
+        <input asp-for="Position" class="form-control" type="text" id="txtPosition" placeholder="Enter job title of user" />
         <hr><br />
         </div>
        

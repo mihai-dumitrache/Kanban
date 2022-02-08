@@ -1,6 +1,7 @@
 ﻿using Kanban.Models;
 using Kanban.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -19,10 +20,11 @@ namespace Kanban.Services
 
         public int AddBoard(Board board)
         {
-                _context.Add<Board>(board);
-                _context.Entry(board.CreatedByUser).State = EntityState.Detached;
-                _context.SaveChanges(); 
-                return 0;            
+            _context.Add<Board>(board);
+            _context.Entry(board.CreatedByUser).State = EntityState.Detached;
+            _context.SaveChanges();
+            return 0;
+
         }
 
         public IEnumerable<Board> GetAllBoards()
@@ -32,14 +34,14 @@ namespace Kanban.Services
 
         public IPagedList<Board> GetBoardsByUser(User user)
         {
-            IPagedList<Board> boardsByUser= _context.UserBoards.Where(x => x.User==user).Select(x => x.Board).ToPagedList();
+            IPagedList<Board> boardsByUser = _context.UserBoards.Where(x => x.User == user).Select(x => x.Board).ToPagedList();
             return boardsByUser;
         }
 
         public Board GetBoardById(int boardId)
         {
-            
-            Board board=new Board();
+
+            Board board = new Board();
             board = _context.Boards
                                    .Include(x => x.CreatedByUser)
                                    .Where(x => x.Id == boardId)
@@ -51,8 +53,8 @@ namespace Kanban.Services
         {
             Board updatedBoard = new Board();
             updatedBoard = _context.Boards.SingleOrDefault(x => x.Id == board.Id);
-            updatedBoard.Title=board.Title;
-            updatedBoard.Description=board.Description;
+            updatedBoard.Title = board.Title;
+            updatedBoard.Description = board.Description;
             updatedBoard.ProjectStatus = board.ProjectStatus;
             _context.SaveChanges();
             return updatedBoard;

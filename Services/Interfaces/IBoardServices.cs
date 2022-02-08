@@ -8,6 +8,7 @@ namespace Kanban.Services.Interfaces
     public interface IBoardServices
     {
         int AddBoard(Board board);
+
         public IEnumerable<Board> GetAllBoards();
 
         public IPagedList<Board> GetBoardsByUser(User user);

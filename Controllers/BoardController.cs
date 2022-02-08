@@ -103,16 +103,27 @@ namespace Kanban.Controllers
             Board newBoard = new Board();
             newBoard.Title = board.Title;
             newBoard.Description = board.Description;
-            newBoard.ProjectStatus = (ProjectStatus)Enum.Parse(typeof(ProjectStatus),board.Status);
+            if (board.Status == null)
+            { newBoard.ProjectStatus = 0; }
+            else
+            { newBoard.ProjectStatus = (ProjectStatus)Enum.Parse(typeof(ProjectStatus), board.Status); } 
             newBoard.CreatedByUser = _userService.GetUserByEmail(HttpContext.Session.GetString("_Email"));
             UserBoard userboard=new UserBoard();
             userboard.Board = newBoard;
             userboard.User = _userService.GetUserByEmail(HttpContext.Session.GetString("_Email"));
             userboard.IsAdmin = true;
-            _boardService.AddBoard(newBoard);
-            _userBoardService.AddUserBoard(userboard);
-            Console.WriteLine("Bravo");
-            return RedirectToAction("Index");
+            if (newBoard.Title==null)
+            {
+                ModelState.AddModelError("NoBoardName", "Board must contain a title!");
+                return View("Views/Board/Project.cshtml");
+            }
+            else
+            {
+                _boardService.AddBoard(newBoard);
+                _userBoardService.AddUserBoard(userboard);
+                return RedirectToAction("Index");
+            }
+            
         }
     }
 }
