@@ -16,6 +16,7 @@ namespace Kanban.Services
         public BoardServices()
         {
             _context = new MyContext();
+            
         }
 
         public int AddBoard(Board board)
@@ -34,7 +35,21 @@ namespace Kanban.Services
 
         public IPagedList<Board> GetBoardsByUser(User user)
         {
-            IPagedList<Board> boardsByUser = _context.UserBoards.Where(x => x.User == user).Select(x => x.Board).ToPagedList();
+                IPagedList<Board> boardsByUser = _context.UserBoards.Where(x => x.User == user).Select(x => x.Board).ToPagedList();
+                foreach (Board board in boardsByUser)
+                {
+                    board.CreatedByUser = _context.Boards.Where(x => x.Id == board.Id).Select(x => x.CreatedByUser).FirstOrDefault();
+                }
+                return boardsByUser;            
+        }
+
+        public IPagedList<Board> GetBoardsWhereAdmin(User user, bool isAdmin)
+        {
+            IPagedList<Board> boardsByUser = _context.UserBoards.Where(x => x.User == user).Where(x => x.IsAdmin == true).Select(x => x.Board).ToPagedList();
+            foreach (Board board in boardsByUser)
+            {
+                board.CreatedByUser = _context.Boards.Where(x => x.Id == board.Id).Select(x => x.CreatedByUser).FirstOrDefault();
+            }
             return boardsByUser;
         }
 
@@ -62,6 +77,7 @@ namespace Kanban.Services
 
         public void DeleteBoard(Board board)
         {
+            _context.UserBoards.RemoveRange(_context.UserBoards.Where(x => x.Board.Id == board.Id));
             _context.Entry(board).State = EntityState.Deleted;
             _context.SaveChanges();
         }

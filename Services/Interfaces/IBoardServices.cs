@@ -16,6 +16,8 @@ namespace Kanban.Services.Interfaces
 
         Board EditBoard(Board board);
 
+        public IPagedList<Board> GetBoardsWhereAdmin(User user, bool isAdmin);
+
         public void DeleteBoard(Board board);
     }
 }

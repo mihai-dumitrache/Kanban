@@ -56,6 +56,12 @@ Task Creator: @Html.DisplayFor(model => model.CreatedBy.Name) <br />
         </select> <br />
         </div>
 
+        <div class="form-group">
+        <label asp-for="Responsible.EmailAdress" class="control-label"><b>Task Responsible</b></label>
+        <input asp-for="Responsible.EmailAdress" class="form-control" type="text" id="txtDescription" value="" />
+        <hr><br />
+        </div>
+
         @Html.HiddenFor(model => model.Id)
         @Html.HiddenFor(model => model.Board)
 

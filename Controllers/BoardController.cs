@@ -9,7 +9,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-
 namespace Kanban.Controllers
 {
     public class BoardController : Controller
@@ -28,18 +27,17 @@ namespace Kanban.Controllers
         }
 
 
-        public IActionResult Index(string sortOrder, string searchString,int? page)
+        public IActionResult Index(string sortOrder, string searchString, int? page)
         {
             if (HttpContext.Session.GetString("_Email") != String.Empty && HttpContext.Session.GetString("_Email") != null)
             {
                 Console.WriteLine("Bravo");
-                
+
                 int pageIndex = 1;
                 int pageSize = 10;
                 pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
+
                 IPagedList<Board> boards = _boardService.GetBoardsByUser(_userService.GetUserByEmail(HttpContext.Session.GetString("_Email")));
-
-
                 if (!String.IsNullOrEmpty(searchString))
                 {
                     boards = boards.Where(s => s.Title.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) >= 0).ToPagedList();
@@ -47,9 +45,30 @@ namespace Kanban.Controllers
 
                 int pageNumber = (page ?? 1);
 
-                return View(boards.ToPagedList(pageIndex,pageSize));
+                return View(boards.ToPagedList(pageIndex, pageSize));
             }
-            return View("Views/Home/Index.cshtml");
+            
+                return View("Views/Home/Index.cshtml");
+
+        }
+            
+        
+
+        public IActionResult ShowPartialView(string sortOrder, string searchString, int? page, bool boardsWithAdmin)
+        {
+            int pageIndex = 1;
+            int pageSize = 10;
+            pageIndex = page.HasValue ? Convert.ToInt32(page) : 1;
+
+            IPagedList<Board> boards2 = _boardService.GetBoardsWhereAdmin(_userService.GetUserByEmail(HttpContext.Session.GetString("_Email")), boardsWithAdmin);
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                boards2 = boards2.Where(s => s.Title.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) >= 0).ToPagedList();
+            }
+
+            int pageNumber = (page ?? 1);
+
+            return PartialView("Views/PartialViews/_BoardIndex.cshtml", boards2.ToPagedList(pageIndex, pageSize));
         }
 
         public IActionResult Project()
@@ -58,12 +77,22 @@ namespace Kanban.Controllers
             return View();
         }
 
-        public IActionResult ViewBoard(Board board)
+        [HttpGet]
+        public IActionResult ViewBoard(int id)
         {
-            board =_boardService.GetBoardById(board.Id);
+            Board board =_boardService.GetBoardById(id);
             board.TasksList = _taskService.GetTasksByBoardId(board);
             Console.WriteLine("Bravo");
             return View(board);
+        }
+
+        public IActionResult ViewBoardWithLoggedUserTasks(Board board)
+        {
+            board = _boardService.GetBoardById(board.Id);
+            string userEmail = HttpContext.Session.GetString("_Email");
+            board.TasksList = _taskService.GetTasksOfLoggedUser(board,userEmail);
+            Console.WriteLine("Bravo");
+            return PartialView("Views/PartialViews/_OwnTasks.cshtml");
         }
 
         public IActionResult UpdateBoard(Board board)

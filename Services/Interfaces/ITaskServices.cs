@@ -7,6 +7,8 @@ namespace Kanban.Services.Interfaces
     {
         int AddTask(Task task);
         public List<Task> GetTasksByBoardId(Board board);
+
+        public List<Task> GetTasksOfLoggedUser(Board board, string userEmail);
         Task GetTaskById(int id);
         Task EditTask(Task task);
     }

@@ -17,6 +17,7 @@ namespace Kanban.Services.Interfaces
         public string EncodePasswordToBase64(string password);
 
         public string DecodeFrom64(string password);
+
         //public List<User> GetAllUsers();
 
     }

@@ -4,6 +4,7 @@ using Kanban.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Kanban.Services
 {
@@ -26,6 +27,9 @@ namespace Kanban.Services
                 _context.Add<UserBoard>(userboard);
                 _context.Entry(userboard.User).State = EntityState.Detached;
                 _context.Entry(userboard.Board.CreatedByUser).State = EntityState.Detached;
+                for (int i = 0; i<= userboard.Board.TasksList.Count-1; i++) {
+                    _context.Entry(userboard.Board.TasksList[i]).State = EntityState.Detached;
+                }
                 _context.Entry(userboard.Board).State = EntityState.Detached;
                 _context.SaveChanges();
                 return 0;
@@ -76,5 +80,6 @@ namespace Kanban.Services
             return false;
         }
 
+        
     }
 }

@@ -27,19 +27,16 @@ function drop(ev) {
 }
 </script>
 
-
-<div>
-Logged User: @Context.Session.GetString("_Email")
-</div>
-
 <h1>@ViewData["Board"]</h1>
 
 Board Name: @Html.DisplayFor(model => model.Title) <br />
 Board Description: @Html.DisplayFor(model => model.Description) <br />
 Board Status: @Html.DisplayFor(model => model.ProjectStatus) <br />
 Board Creator: @Html.DisplayFor(model => model.CreatedByUser.Name) <br />
-@Html.HiddenFor(model => model.Id)
+@Html.HiddenFor(model => model.Id, new{id="boardId"})
 @Html.HiddenFor(model => model.UserBoards)
+
+<p>Only my tasks<input type="checkbox" class="form-check-input" style="top:22%;left:37.5%" id="myTasks" name="myTasks" value="true" onclick="validate()" /></p>
 
 <div class="row" style="width:1500px">
 
@@ -125,6 +122,9 @@ Board Creator: @Html.DisplayFor(model => model.CreatedByUser.Name) <br />
 
 </div>
 
+<div id="MyTasksPartialView">
+</div>
+
 <button type="submit" style="background-color: #4CAF60" onclick="location.href='@Url.Action("Index","Task",new {id=Model.Id})'" >Add Task</button>
 
 @{
@@ -151,3 +151,52 @@ Board Creator: @Html.DisplayFor(model => model.CreatedByUser.Name) <br />
 }
 else
 {}
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+<script type="text/javascript" src="lib.js"></script>
+
+<script>
+    debugger;
+    function validate(){
+        var remember = document.getElementById("myTasks");
+    $(remember).on('change', function () {
+        debugger;
+        if (remember.checked)
+        {
+            
+            
+            //loading partial view
+            jQuery.ajax({
+                url: '@Url.Action("ViewBoardWithLoggedUserTasks", "Board")',
+                type: "Get",
+                
+                success: function () {
+                    $("#MyTasksPartialView").html(data);
+                },
+                failure: function (errMsg) {
+                alert(errMsg);
+                }
+            });
+        }
+        else
+        {
+            var id=@Model.Id;
+            window.location='@Url.Action("ViewBoard", "Board")';
+            jQuery.ajax({
+                url: '@Url.Action("ViewBoard", "Board")',
+                type: "Get",
+                data: {id: id},
+                success: function (data) { 
+                debugger;    
+                },
+                
+                failure: function (errMsg) {
+                alert(errMsg);
+                }
+            });
+        }
+    });
+    }
+
+</script>

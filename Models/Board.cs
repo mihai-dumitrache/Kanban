@@ -28,6 +28,8 @@ namespace Kanban.Models
         public User CreatedByUser { get; set; }
 
         public ProjectStatus ProjectStatus { get; set; }
+
+        
     }
 
    

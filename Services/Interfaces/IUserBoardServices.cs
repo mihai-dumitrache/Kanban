@@ -1,4 +1,5 @@
 ﻿using Kanban.Models;
+using System.Collections.Generic;
 
 namespace Kanban.Services.Interfaces
 {
@@ -10,5 +11,7 @@ namespace Kanban.Services.Interfaces
         public bool CheckUserOnUserBoards(UserBoard userboard);
 
         public bool CheckIfAdmin(string userEmail, int boardId);
+
+        
     }
 }

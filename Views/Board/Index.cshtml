@@ -13,15 +13,19 @@
 
 <script src="https://kit.fontawesome.com/d5cb6dbe34.js" crossorigin="anonymous"></script>
 
-<button type="button" class="font-family" onclick="location.href='@Url.Action("Project","Board")'" style="font-family:Verdana;background-color: #efefef;font-size:105%;height:3.8%;position:absolute;top:17.5%;left:65%;right:0%;padding:0%;text-align:center;border-radius:4%;width:10%;"><i class="far fa-plus-square" ><i style="font-family:sans-serif;font-style:normal"> Add New Board</i></i></button>
+<button type="button" class="font-family" onclick="location.href='@Url.Action("Project","Board")'" style="font-family:Verdana;background-color: #efefef;font-size:105%;height:3.8%;position:absolute;top:17.5%;left:65%;right:0%;padding:0%;text-align:center;border-radius:4%;width:10%;"><i class="far fa-plus-square"><i style="font-family:sans-serif;font-style:normal"> Add New Board</i></i></button>
 
-<form asp-controller="Board" asp-action="Index" method='GET'>
+<form name="myform" asp-controller="Board" asp-action="Index" method='GET'>
     <label>Search for a board:</label>
     <input type='text' name='searchString' />
-    <button type='submit' name='submit' value='submit' style="border-radius:20%"><i class="fas fa-search-plus"></i></button>   
+    <button type='submit' name='submit' value='submit' style="border-radius:20%"><i class="fas fa-search-plus"></i></button>
 </form>
 
-<table class="table">
+
+
+<p>Only Boards where admin<input type="checkbox" class="form-check-input" style="top:22%;left:27.5%" id="boardsWithAdmin" name="boardsWithAdmin" value="true" onclick="validate()" /></p>
+
+<table class="table" id="initialTable">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.FirstOrDefault().Title)
@@ -29,36 +33,93 @@
         <th>
             @Html.DisplayNameFor(model => model.FirstOrDefault().ProjectStatus)
         </th>
-        
+        <th>
+            @Html.DisplayNameFor(model => model.FirstOrDefault().CreatedByUser)
+        </th>
+
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td id="updatedTitle" >
-            @Html.DisplayFor(modelItem => item.Title)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.ProjectStatus)
-        </td>
-        <td>
-            <i class="fas fa-eye" title="View" style="color:#00FF00" onclick="location.href='@Url.Action("ViewBoard","Board",new {id=item.Id})'"></i>
-        </td>
-        <td>
-            <i class="fas fa-edit" title="Edit" style="color:#1E90FF" onclick="location.href='@Url.Action("UpdateBoard","Board",new {id=item.Id})'"></i>
-        </td>
-        <td>
-            <i class="fas fa-trash-alt" title="Delete" style="color:#FF4500" onclick="location.href='@Url.Action("DeleteBoard","Board",new {id=item.Id})'"></i>
-        </td>
-        <td>
-
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td id="updatedTitle">
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProjectStatus)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedByUser.Name)
+            </td>
+            <td>
+                <i class="fas fa-eye" title="View" style="color:#00FF00" onclick="location.href='@Url.Action("ViewBoard","Board",new {id=item.Id})'"></i>
+            </td>
+            <td>
+                <i class="fas fa-edit" title="Edit" style="color:#1E90FF" onclick="location.href='@Url.Action("UpdateBoard","Board",new {id=item.Id})'"></i>
+            </td>
+            <td>
+                <i class="fas fa-trash-alt" title="Delete" style="color:#FF4500" onclick="location.href='@Url.Action("DeleteBoard","Board",new {id=item.Id})'"></i>
+            </td>
+            <td>
+            </td>
+        </tr>
+    }
 
 </table>
 
+<div id="FirstPartialView">
+</div>
 
-
-    <br />
+<br />
 
 Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+<script type="text/javascript" src="lib.js"></script>
+
+<script>
+    debugger;
+    function validate(){
+        var remember = document.getElementById("boardsWithAdmin");
+    $(remember).on('change', function () {
+        if (remember.checked)
+        {
+            var boardsWithAdmin=true;
+            document.getElementById("initialTable").style.display="none";
+            //loading partial view
+            jQuery.ajax({
+                url: '@Url.Action("ShowPartialView", "Board")',
+                type: "Get",
+                data: {boardsWithAdmin: boardsWithAdmin},
+                success: function (data) {
+                    $("#FirstPartialView").html(data);
+                },
+                failure: function (errMsg) {
+                alert(errMsg);
+                }
+            });
+        }
+        else
+        {
+            var boardsWithAdmin=false;
+            window.location='@Url.Action("Index", "Board")';
+            jQuery.ajax({
+                url: '@Url.Action("Index", "Board")',
+                type: "Get",
+                data: {boardsWithAdmin: boardsWithAdmin},
+                success: function (data) { 
+                    
+                },
+                failure: function (errMsg) {
+                alert(errMsg);
+                }
+            });
+        }
+    });
+    }
+
+</script>
+
+
+

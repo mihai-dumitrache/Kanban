@@ -1,5 +1,6 @@
 ﻿using Kanban.Models;
 using Kanban.Services.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,12 @@ namespace Kanban.Services
     {
 
         private MyContext _context;
+        private IUserServices _userService;
 
-        public TaskServices()
+        public TaskServices(IUserServices userService)
         {
             _context = new MyContext();
+            _userService = userService;
         }
         public int AddTask(Task task)
         {
@@ -21,6 +24,7 @@ namespace Kanban.Services
             _context.Entry(task.Board.CreatedByUser).State = EntityState.Detached;
             _context.Entry(task.Board).State = EntityState.Detached;
             _context.Entry(task.Responsible).State = EntityState.Detached;
+            _context.Entry(task.CreatedBy).State = EntityState.Detached;
             _context.SaveChanges();
             return 0;
         }
@@ -33,10 +37,17 @@ namespace Kanban.Services
             return tasksList;
         }
 
+        public List<Task> GetTasksOfLoggedUser(Board board, string userEmail)
+        {
+            List<Task> tasksList = new List<Task>();
+            tasksList = _context.Tasks.Where(x => x.Board == board).Where(x => x.Responsible.EmailAdress == userEmail).ToList();
+            return tasksList;
+        }
+
         public Task GetTaskById(int id)
         {
             Task task = new Task();
-            task = _context.Tasks.Include(y => y.Board).Include(y => y.CreatedBy).SingleOrDefault(x => x.Id == id);
+            task = _context.Tasks.Include(y => y.Board).Include(y => y.CreatedBy).Include(y => y.Responsible).SingleOrDefault(x => x.Id == id);
             return task;
         }
 
@@ -48,6 +59,7 @@ namespace Kanban.Services
             updatedTask.Description = task.Description;
             updatedTask.Priority=task.Priority;
             updatedTask.Progress = task.Progress;
+            updatedTask.Responsible = _userService.GetUserByEmail(task.Responsible.EmailAdress);
             _context.SaveChanges();
             return updatedTask;
         }
