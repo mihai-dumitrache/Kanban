@@ -59,6 +59,8 @@ namespace Kanban.Services
             Board board = new Board();
             board = _context.Boards
                                    .Include(x => x.CreatedByUser)
+                                   .Include(x => x.TasksList)
+                                   .Include(x => x.UserBoards)
                                    .Where(x => x.Id == boardId)
                                    .FirstOrDefault<Board>();
             return board;

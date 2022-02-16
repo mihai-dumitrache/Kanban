@@ -19,5 +19,6 @@ namespace Kanban.Models
         {
             optionsBuilder.UseSqlServer("Data Source=. \\SQLEXPRESS;Initial Catalog=Kanban;Integrated Security=True");
         }
+
     }
 }

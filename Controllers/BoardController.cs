@@ -77,7 +77,7 @@ namespace Kanban.Controllers
             return View();
         }
 
-        [HttpGet]
+  
         public IActionResult ViewBoard(int id)
         {
             Board board =_boardService.GetBoardById(id);
@@ -86,13 +86,13 @@ namespace Kanban.Controllers
             return View(board);
         }
 
-        public IActionResult ViewBoardWithLoggedUserTasks(Board board)
+        public IActionResult ViewBoardWithLoggedUserTasks(int id)
         {
-            board = _boardService.GetBoardById(board.Id);
+            Board board = _boardService.GetBoardById(id);
             string userEmail = HttpContext.Session.GetString("_Email");
             board.TasksList = _taskService.GetTasksOfLoggedUser(board,userEmail);
             Console.WriteLine("Bravo");
-            return PartialView("Views/PartialViews/_OwnTasks.cshtml");
+            return PartialView("Views/PartialViews/_OwnTasks.cshtml",board);
         }
 
         public IActionResult UpdateBoard(Board board)

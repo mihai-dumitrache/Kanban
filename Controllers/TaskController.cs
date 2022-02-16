@@ -43,15 +43,16 @@ namespace Kanban.Controllers
             if (_userService.GetUserByEmail(task.Responsible.EmailAdress) != null)
             {
                 userBoard.User = _userService.GetUserByEmail(task.Responsible.EmailAdress);
-                if (_userBoardService.CheckUserAccessOnBoard(userBoard) == false)
+                if (_userBoardService.CheckUserAccessOnBoard(userBoard) == true)
                 {
                     //features to add: Check if user is on board before adding task / afisare task creator la ViewTask
                     newTask.Responsible = _userService.GetUserByEmail(task.Responsible.EmailAdress);
                     newTask.Progress = task.Progress;
                     newTask.CreatedBy = _userService.GetUserByEmail(HttpContext.Session.GetString("_Email"));
+                    newTask.Board= _boardService.GetBoardById(task.Board.Id);
                     _taskService.AddTask(newTask);
                     Console.WriteLine("Bravo");
-                    return RedirectToAction("ViewBoard", "Board", newTask.Board);
+                    return View("Views/Board/ViewBoard.cshtml", newTask.Board);
                 }
             }
             ModelState.AddModelError("UserNotOnBoard", "User has no access on board!");
@@ -64,9 +65,26 @@ namespace Kanban.Controllers
         }
         public IActionResult EditTask(Task task)
         {
-            task = _taskService.EditTask(task);
-            task.Board.TasksList = _taskService.GetTasksByBoardId(task.Board);
-            return View("Views/Board/ViewBoard.cshtml",task.Board);
+            UserBoard userBoard = new UserBoard();
+            userBoard.Board = _taskService.GetBoardByTaskId(task.Id);
+            task.CreatedBy = _taskService.GetTaskById(task.Id).CreatedBy;
+            if (_userService.CheckUserByEmail(task.Responsible.EmailAdress) == true)
+            { userBoard.User = _userService.GetUserByEmail(task.Responsible.EmailAdress); }
+            else {
+                ModelState.AddModelError("UserNotFound", "User doesn't exist!");
+                return View("Views/Task/UpdateTask.cshtml",task);
+            }
+            if (_userBoardService.CheckUserAccessOnBoard(userBoard) == true)
+            {
+                task = _taskService.EditTask(task);
+                task.Board.TasksList = _taskService.GetTasksByBoardId(task.Board);
+                return View("Views/Board/ViewBoard.cshtml", task.Board);
+            }
+            else
+            {
+                ModelState.AddModelError("UserNotOnBoard", "User has no access on board!");
+                return View("Views/Task/UpdateTask.cshtml",task);
+            }
         }
 
         public IActionResult UpdateTask(Task task)

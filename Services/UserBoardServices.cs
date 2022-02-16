@@ -22,14 +22,12 @@ namespace Kanban.Services
         }
         public int AddUserBoard(UserBoard userboard)
         {
-            if (CheckUserAccessOnBoard(userboard) == true)
+            if (CheckUserAccessOnBoard(userboard) == false)
             {
+                userboard.User=_context.Users.AsNoTracking().First(x => x == userboard.User);
+                userboard.Board=_context.Boards.AsNoTracking().First(x => x == userboard.Board);
                 _context.Add<UserBoard>(userboard);
                 _context.Entry(userboard.User).State = EntityState.Detached;
-                _context.Entry(userboard.Board.CreatedByUser).State = EntityState.Detached;
-                for (int i = 0; i<= userboard.Board.TasksList.Count-1; i++) {
-                    _context.Entry(userboard.Board.TasksList[i]).State = EntityState.Detached;
-                }
                 _context.Entry(userboard.Board).State = EntityState.Detached;
                 _context.SaveChanges();
                 return 0;
@@ -44,9 +42,9 @@ namespace Kanban.Services
             {
                 if (CheckUserOnUserBoards(userboard) == false)
                 {
-                    return true;
+                    return false;
                 }
-                return false;
+                return true;
             }
             return false;
 

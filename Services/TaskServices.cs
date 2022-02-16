@@ -25,6 +25,14 @@ namespace Kanban.Services
             _context.Entry(task.Board).State = EntityState.Detached;
             _context.Entry(task.Responsible).State = EntityState.Detached;
             _context.Entry(task.CreatedBy).State = EntityState.Detached;
+            for (int i=0;i<task.Board.UserBoards.Count;i++)
+            {
+                _context.Entry(task.Board.UserBoards[i]).State = EntityState.Detached;
+            }
+            for (int i = 0; i < task.Board.TasksList.Count-1; i++)
+            {
+                _context.Entry(task.Board.TasksList[i]).State = EntityState.Detached;
+            }
             _context.SaveChanges();
             return 0;
         }
@@ -33,7 +41,7 @@ namespace Kanban.Services
 
         {
             List<Task> tasksList = new List<Task>();
-            tasksList = _context.Tasks.Where(x => x.Board==board).ToList();
+            tasksList = _context.Tasks.Where(x => x.Board==board).Include(x => x.Responsible).ToList();
             return tasksList;
         }
 
@@ -60,8 +68,16 @@ namespace Kanban.Services
             updatedTask.Priority=task.Priority;
             updatedTask.Progress = task.Progress;
             updatedTask.Responsible = _userService.GetUserByEmail(task.Responsible.EmailAdress);
+            updatedTask.CreatedBy = task.CreatedBy;
             _context.SaveChanges();
             return updatedTask;
+        }
+
+        public Board GetBoardByTaskId(int taskId)
+        {
+            Board board = new Board();
+            board = _context.Tasks.Where(y => y.Id==taskId).Select(y => y.Board).FirstOrDefault();
+            return board;
         }
 
     }

@@ -15,7 +15,7 @@ Task Creator: @Html.DisplayFor(model => model.CreatedBy.Name) <br />
 <button type="button" onclick="location.href='@Url.Action("EditTask","Task")'" style="background-color: #4CAF60">Update Task</button>
 <button type="button" onclick="location.href='@Url.Action("ViewTask","Task",new {id=Model.Id})'" style="background-color: #4CAF60">Cancel</button>
 
-<form asp-action="EditTask" method="post">
+<form asp-action="EditTask" method="get">
     <div class="container">
 
         <h1>Edit task</h1>
@@ -60,6 +60,12 @@ Task Creator: @Html.DisplayFor(model => model.CreatedBy.Name) <br />
         <label asp-for="Responsible.EmailAdress" class="control-label"><b>Task Responsible</b></label>
         <input asp-for="Responsible.EmailAdress" class="form-control" type="text" id="txtDescription" value="" />
         <hr><br />
+
+        <div class="has-error">
+            @Html.ValidationMessage("UserNotOnBoard")
+            @Html.ValidationMessage("UserNotFound")
+        </div>
+
         </div>
 
         @Html.HiddenFor(model => model.Id)

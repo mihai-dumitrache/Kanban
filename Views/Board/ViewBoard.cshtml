@@ -36,9 +36,9 @@ Board Creator: @Html.DisplayFor(model => model.CreatedByUser.Name) <br />
 @Html.HiddenFor(model => model.Id, new{id="boardId"})
 @Html.HiddenFor(model => model.UserBoards)
 
-<p>Only my tasks<input type="checkbox" class="form-check-input" style="top:22%;left:37.5%" id="myTasks" name="myTasks" value="true" onclick="validate()" /></p>
+<p>Only my tasks<input type="checkbox" class="form-check-input" style="top:23%;left:22%" id="myTasks" name="myTasks" value="true" onclick="validate()" /></p>
 
-<div class="row" style="width:1500px">
+<div id="allTasks" class="row" style="width:1500px">
 
   <div class="col-sm-2" style="border: thin solid black">New
     
@@ -48,7 +48,8 @@ Board Creator: @Html.DisplayFor(model => model.CreatedByUser.Name) <br />
         {
          <div class="row">
             <div class="col" style="border: thin solid black" ondrop="drop(event)" ondragover="allowDrop(event)" draggable="true" ondragstart="drag(event)">@Html.DisplayFor(modelitem => item.Title)<br />
-                     <p>&emsp;&emsp;&emsp;- @Html.DisplayFor(modelitem => item.Description)</p>
+                     <p>• @Html.DisplayFor(modelitem => item.Description)</p>
+                     <p>• Responsible: @Html.DisplayFor(modelitem => item.Responsible.Name)</p>
                      <i class="fas fa-info-circle" title="View Details" onclick="location.href='@Url.Action("ViewTask","Task",new {id=item.Id})'"></i>
             </div>
          </div>
@@ -64,7 +65,8 @@ Board Creator: @Html.DisplayFor(model => model.CreatedByUser.Name) <br />
         {
          <div class="row">
          <div class="col" style="border: thin solid black">@Html.DisplayFor(modelitem => item.Title)<br />
-                      <p>&emsp;&emsp;&emsp;- @Html.DisplayFor(modelitem => item.Description)</p>
+                      <p>• @Html.DisplayFor(modelitem => item.Description)</p>
+                      <p>• Responsible: @Html.DisplayFor(modelitem => item.Responsible.Name)</p>
                      <i class="fas fa-info-circle" title="View Details" onclick="location.href='@Url.Action("ViewTask","Task",new {id=item.Id})'"></i>
                         </div>
          </div>
@@ -80,7 +82,8 @@ Board Creator: @Html.DisplayFor(model => model.CreatedByUser.Name) <br />
         {
          <div class="row">
          <div class="col" style="border: thin solid black">@Html.DisplayFor(modelitem => item.Title)<br />
-                       <p>&emsp;&emsp;&emsp;- @Html.DisplayFor(modelitem => item.Description)</p>
+                       <p>• @Html.DisplayFor(modelitem => item.Description)</p>
+                       <p>• Responsible: @Html.DisplayFor(modelitem => item.Responsible.Name)</p>
                      <i class="fas fa-info-circle" title="View Details" onclick="location.href='@Url.Action("ViewTask","Task",new {id=item.Id})'"></i>
                         </div>
          </div>
@@ -96,7 +99,8 @@ Board Creator: @Html.DisplayFor(model => model.CreatedByUser.Name) <br />
         {
          <div class="row">
          <div class="col" style="border: thin solid black">@Html.DisplayFor(modelitem => item.Title)<br />
-                      <p>&emsp;&emsp;&emsp;- @Html.DisplayFor(modelitem => item.Description)</p>
+                      <p>• @Html.DisplayFor(modelitem => item.Description)</p>
+                      <p>• Responsible: @Html.DisplayFor(modelitem => item.Responsible.Name)</p>
                      <i class="fas fa-info-circle" title="View Details" onclick="location.href='@Url.Action("ViewTask","Task",new {id=item.Id})'"></i>
                         </div>
          </div>
@@ -112,7 +116,8 @@ Board Creator: @Html.DisplayFor(model => model.CreatedByUser.Name) <br />
         {
          <div class="row">
          <div class="col" style="border: thin solid black">@Html.DisplayFor(modelitem => item.Title)<br />
-                      <p>&emsp;&emsp;&emsp;- @Html.DisplayFor(modelitem => item.Description)</p>
+                      <p>• @Html.DisplayFor(modelitem => item.Description)</p>
+                      <p>• Responsible: @Html.DisplayFor(modelitem => item.Responsible.Name)</p>
                      <i class="fas fa-info-circle" title="View Details" onclick="location.href='@Url.Action("ViewTask","Task",new {id=item.Id})'"></i>
                         </div>
          </div>
@@ -122,7 +127,7 @@ Board Creator: @Html.DisplayFor(model => model.CreatedByUser.Name) <br />
 
 </div>
 
-<div id="MyTasksPartialView">
+<div id="OwnTasksPartialView">
 </div>
 
 <button type="submit" style="background-color: #4CAF60" onclick="location.href='@Url.Action("Index","Task",new {id=Model.Id})'" >Add Task</button>
@@ -154,7 +159,7 @@ else
 
 <script src="~/Scripts/jquery-1.10.2.min.js"></script>
 
-<script type="text/javascript" src="lib.js"></script>
+<script type="text/javascript"></script>
 
 <script>
     debugger;
@@ -167,12 +172,14 @@ else
             
             
             //loading partial view
+            var id=@Model.Id;
+            document.getElementById("allTasks").style.display="none";
             jQuery.ajax({
                 url: '@Url.Action("ViewBoardWithLoggedUserTasks", "Board")',
                 type: "Get",
-                
-                success: function () {
-                    $("#MyTasksPartialView").html(data);
+                data: {id: id},
+                success: function (data) {
+                    $("#OwnTasksPartialView").html(data);
                 },
                 failure: function (errMsg) {
                 alert(errMsg);
