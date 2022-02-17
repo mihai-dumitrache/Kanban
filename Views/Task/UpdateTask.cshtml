@@ -1,4 +1,5 @@
 ﻿@using Kanban.Models
+@using Microsoft.AspNetCore.Http
 @model Kanban.Models.Task
 
 @*
@@ -6,6 +7,8 @@
 *@
 @{
 }
+
+<script src="https://kit.fontawesome.com/d5cb6dbe34.js" crossorigin="anonymous"></script>
 
 Task Name: @Html.DisplayFor(model => model.Title) <br />
 Task Description: @Html.DisplayFor(model => model.Description) <br />
@@ -58,7 +61,7 @@ Task Creator: @Html.DisplayFor(model => model.CreatedBy.Name) <br />
 
         <div class="form-group">
         <label asp-for="Responsible.EmailAdress" class="control-label"><b>Task Responsible</b></label>
-        <input asp-for="Responsible.EmailAdress" class="form-control" type="text" id="txtDescription" value="" />
+        <input asp-for="Responsible.EmailAdress" class="form-control" type="text" id="txtResponsible" value="" /><i class="fa fa-user" type="button" value="@Context.Session.GetString("_Email")" id="ownUser" onclick="chooseOwn()"></i>
         <hr><br />
 
         <div class="has-error">
@@ -77,3 +80,14 @@ Task Creator: @Html.DisplayFor(model => model.CreatedBy.Name) <br />
 
 
 </form>
+
+<script  type="text/javascript"></script>
+<script>
+    function chooseOwn() {
+        debugger;
+        var var1="@Context.Session.GetString("_Email")";
+        var textBox=document.getElementById("txtResponsible");
+        textBox.value=var1;
+        
+    };
+</script>
