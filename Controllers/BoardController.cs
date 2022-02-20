@@ -47,12 +47,12 @@ namespace Kanban.Controllers
 
                 return View(boards.ToPagedList(pageIndex, pageSize));
             }
-            
-                return View("Views/Home/Index.cshtml");
+
+            return View("Views/Home/Index.cshtml");
 
         }
-            
-        
+
+
 
         public IActionResult ShowPartialView(string sortOrder, string searchString, int? page, bool boardsWithAdmin)
         {
@@ -72,15 +72,15 @@ namespace Kanban.Controllers
         }
 
         public IActionResult Project()
-        {            
+        {
             Console.WriteLine("Bravo");
             return View();
         }
 
-  
+
         public IActionResult ViewBoard(int id)
         {
-            Board board =_boardService.GetBoardById(id);
+            Board board = _boardService.GetBoardById(id);
             board.TasksList = _taskService.GetTasksByBoardId(board);
             Console.WriteLine("Bravo");
             return View(board);
@@ -90,9 +90,9 @@ namespace Kanban.Controllers
         {
             Board board = _boardService.GetBoardById(id);
             string userEmail = HttpContext.Session.GetString("_Email");
-            board.TasksList = _taskService.GetTasksOfLoggedUser(board,userEmail);
+            board.TasksList = _taskService.GetTasksOfLoggedUser(board, userEmail);
             Console.WriteLine("Bravo");
-            return PartialView("Views/PartialViews/_OwnTasks.cshtml",board);
+            return PartialView("Views/PartialViews/_OwnTasks.cshtml", board);
         }
 
         public IActionResult UpdateBoard(Board board)
@@ -111,7 +111,7 @@ namespace Kanban.Controllers
             {
                 boardList = boardList.Where(s => s.Title.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) >= 0);
             }
-            return View("Views/Board/Index.cshtml",boardList);
+            return View("Views/Board/Index.cshtml", boardList);
         }
 
         public IActionResult DeleteBoard(Board board, string sortOrder, string searchString)
@@ -135,13 +135,14 @@ namespace Kanban.Controllers
             if (board.Status == null)
             { newBoard.ProjectStatus = 0; }
             else
-            { newBoard.ProjectStatus = (ProjectStatus)Enum.Parse(typeof(ProjectStatus), board.Status); } 
+            { newBoard.ProjectStatus = (ProjectStatus)Enum.Parse(typeof(ProjectStatus), board.Status); }
             newBoard.CreatedByUser = _userService.GetUserByEmail(HttpContext.Session.GetString("_Email"));
-            UserBoard userboard=new UserBoard();
+            UserBoard userboard = new UserBoard();
             userboard.Board = newBoard;
             userboard.User = _userService.GetUserByEmail(HttpContext.Session.GetString("_Email"));
             userboard.IsAdmin = true;
-            if (newBoard.Title==null)
+            
+            if (newBoard.Title == null)
             {
                 ModelState.AddModelError("NoBoardName", "Board must contain a title!");
                 return View("Views/Board/Project.cshtml");
@@ -150,9 +151,14 @@ namespace Kanban.Controllers
             {
                 _boardService.AddBoard(newBoard);
                 _userBoardService.AddUserBoard(userboard);
+                _boardService.AddBoardTaskStatus(newBoard);
                 return RedirectToAction("Index");
             }
-            
+
         }
+
+        
+
     }
+
 }

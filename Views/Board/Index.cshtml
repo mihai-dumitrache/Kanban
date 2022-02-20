@@ -15,6 +15,7 @@
 
 <button type="button" class="font-family" onclick="location.href='@Url.Action("Project","Board")'" style="font-family:Verdana;background-color: #efefef;font-size:105%;height:3.8%;position:absolute;top:17.5%;left:65%;right:0%;padding:0%;text-align:center;border-radius:4%;width:10%;"><i class="far fa-plus-square"><i style="font-family:sans-serif;font-style:normal"> Add New Board</i></i></button>
 
+
 <form name="myform" asp-controller="Board" asp-action="Index" method='GET'>
     <label>Search for a board:</label>
     <input type='text' name='searchString' />
@@ -73,6 +74,8 @@
 <br />
 
 Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+@Html.PagedListPager(Model, page => Url.Action("Index", 
+    new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
 
 <script src="~/Scripts/jquery-1.10.2.min.js"></script>
 

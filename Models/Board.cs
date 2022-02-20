@@ -23,6 +23,8 @@ namespace Kanban.Models
         //public List<User> UsersList { get; set; }
 
         public List<UserBoard> UserBoards { get; set; }
+
+        public List<BoardTaskStatus> BoardTaskStatuses { get; set;}
         public string Description { get; set;}
 
         public User CreatedByUser { get; set; }

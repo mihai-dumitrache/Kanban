@@ -10,86 +10,27 @@
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
-<div id="allTasks" class="row" style="width:1500px">
+@Html.HiddenFor(model => model.Id)
 
-  <div class="col-sm-2" style="border: thin solid black">New
-    
-    @foreach(var item in Model.TasksList)
-    {
-      @if ((int)item.Progress==0)
+<div id="allTasks" class="row"  >
+
+        @foreach (var statusType in Model.BoardTaskStatuses)
         {
-         <div class="row">
-            <div class="col" style="border: thin solid black" ondrop="drop(event)" ondragover="allowDrop(event)" draggable="true" ondragstart="drag(event)">@Html.DisplayFor(modelitem => item.Title)<br />
-                     <p>• @Html.DisplayFor(modelitem => item.Description)</p>
-                     <i class="fas fa-info-circle" title="View Details" onclick="location.href='@Url.Action("ViewTask","Task",new {id=item.Id})'"></i>
+            <div class="col" style="border: thin solid black">@Html.DisplayFor(model => statusType.Status.StatusName) @*</div>*@
+            @foreach (var item in Model.TasksList)
+            {
+                @if (item.Status.Id == statusType.Status.Id)
+                {
+                    
+                    <div class="row" style="border: thin solid black">
+                        <div class="col" ondrop="drop(event)" ondragover="allowDrop(event)" draggable="true" ondragstart="drag(event)">@Html.DisplayFor(modelitem => item.Title)<br />
+                            <p>• @Html.DisplayFor(modelitem => item.Description)</p>
+                            <i class="fas fa-info-circle" title="View Details" onclick="location.href='@Url.Action("ViewTask","Task",new {id=item.Id})'"></i>
+                        </div>
+                    </div>
+                    
+                }
+            }
             </div>
-         </div>
         }
-    }   
-  </div>
-
-  <div class="col-sm-2" style="border: thin solid black">In Progress
-    
-    @foreach(var item in Model.TasksList)
-    {
-      @if ((int)item.Progress==1)
-        {
-         <div class="row">
-         <div class="col" style="border: thin solid black">@Html.DisplayFor(modelitem => item.Title)<br />
-                      <p>• @Html.DisplayFor(modelitem => item.Description)</p>
-                     <i class="fas fa-info-circle" title="View Details" onclick="location.href='@Url.Action("ViewTask","Task",new {id=item.Id})'"></i>
-                        </div>
-         </div>
-        }
-    }   
-  </div>
-
-  <div class="col-sm-2" style="border: thin solid black">Testing
-    
-    @foreach(var item in Model.TasksList)
-    {
-      @if ((int)item.Progress==2)
-        {
-         <div class="row">
-         <div class="col" style="border: thin solid black">@Html.DisplayFor(modelitem => item.Title)<br />
-                       <p>• @Html.DisplayFor(modelitem => item.Description)</p>
-                     <i class="fas fa-info-circle" title="View Details" onclick="location.href='@Url.Action("ViewTask","Task",new {id=item.Id})'"></i>
-                        </div>
-         </div>
-        }
-    }   
-  </div>
-
-  <div class="col-sm-2" style="border: thin solid black">On Hold
-    
-    @foreach(var item in Model.TasksList)
-    {
-      @if ((int)item.Progress==3)
-        {
-         <div class="row">
-         <div class="col" style="border: thin solid black">@Html.DisplayFor(modelitem => item.Title)<br />
-                      <p>• @Html.DisplayFor(modelitem => item.Description)</p>
-                     <i class="fas fa-info-circle" title="View Details" onclick="location.href='@Url.Action("ViewTask","Task",new {id=item.Id})'"></i>
-                        </div>
-         </div>
-        }
-    }   
-  </div>
-
-  <div class="col-sm-2" style="border: thin solid black">Closed
-    
-    @foreach(var item in Model.TasksList)
-    {
-      @if ((int)item.Progress==4)
-        {
-         <div class="row">
-         <div class="col" style="border: thin solid black">@Html.DisplayFor(modelitem => item.Title)<br />
-                      <p>• @Html.DisplayFor(modelitem => item.Description)</p>
-                     <i class="fas fa-info-circle" title="View Details" onclick="location.href='@Url.Action("ViewTask","Task",new {id=item.Id})'"></i>
-                        </div>
-         </div>
-        }
-    }   
-  </div>
-
 </div>

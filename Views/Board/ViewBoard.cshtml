@@ -36,96 +36,35 @@ Board Creator: @Html.DisplayFor(model => model.CreatedByUser.Name) <br />
 @Html.HiddenFor(model => model.Id, new{id="boardId"})
 @Html.HiddenFor(model => model.UserBoards)
 
-<p>Only my tasks<input type="checkbox" class="form-check-input" style="top:23%;left:22%" id="myTasks" name="myTasks" value="true" onclick="validate()" /></p>
+<p style="top:23%;left:18%">Only my tasks<input type="checkbox" class="form-check-input" style="top:20%;left:22%" id="myTasks" name="myTasks" value="true" onclick="validate()" /></p>
 
-<div id="allTasks" class="row" style="width:1500px">
-
-  <div class="col-sm-2" style="border: thin solid black">New
-    
-    @foreach(var item in Model.TasksList)
-    {
-      @if ((int)item.Progress==0)
+<div id="allTasks" class="row" style="display:flex" >
+   
+        @foreach (var statusType in Model.BoardTaskStatuses)
         {
-         <div class="row">
-            <div class="col" style="border: thin solid black" ondrop="drop(event)" ondragover="allowDrop(event)" draggable="true" ondragstart="drag(event)">@Html.DisplayFor(modelitem => item.Title)<br />
-                     <p>• @Html.DisplayFor(modelitem => item.Description)</p>
-                     <p>• Responsible: @Html.DisplayFor(modelitem => item.Responsible.Name)</p>
-                     <i class="fas fa-info-circle" title="View Details" onclick="location.href='@Url.Action("ViewTask","Task",new {id=item.Id})'"></i>
+            
+            <div class="col" style="border: thin solid black;display:table-group-column">@Html.DisplayFor(model => statusType.Status.StatusName) @*</div>*@
+            
+            @foreach (var item in Model.TasksList)
+            {
+                @if (item.Status.Id == statusType.Status.Id)
+                {
+                    
+                    <div class="row" style="border: thin solid black;display:table-group-row">
+                        <div class="col" style="display:table-column"  ondrop="drop(event)" ondragover="allowDrop(event)" draggable="true" ondragstart="drag(event)">@Html.DisplayFor(modelitem => item.Title)<br />
+                            <p>• @Html.DisplayFor(modelitem => item.Description)</p>
+                            <p>• Responsible: @Html.DisplayFor(modelitem => item.Responsible.Name)</p>
+                            <i class="fas fa-info-circle"  title="View Details" onclick="location.href='@Url.Action("ViewTask","Task",new {id=item.Id})'"></i>
+                        </div>
+                    </div>
+                    
+                }
+            }
             </div>
-         </div>
+            
         }
-    }   
-  </div>
-
-  <div class="col-sm-2" style="border: thin solid black">In Progress
-    
-    @foreach(var item in Model.TasksList)
-    {
-      @if ((int)item.Progress==1)
-        {
-         <div class="row">
-         <div class="col" style="border: thin solid black">@Html.DisplayFor(modelitem => item.Title)<br />
-                      <p>• @Html.DisplayFor(modelitem => item.Description)</p>
-                      <p>• Responsible: @Html.DisplayFor(modelitem => item.Responsible.Name)</p>
-                     <i class="fas fa-info-circle" title="View Details" onclick="location.href='@Url.Action("ViewTask","Task",new {id=item.Id})'"></i>
-                        </div>
-         </div>
-        }
-    }   
-  </div>
-
-  <div class="col-sm-2" style="border: thin solid black">Testing
-    
-    @foreach(var item in Model.TasksList)
-    {
-      @if ((int)item.Progress==2)
-        {
-         <div class="row">
-         <div class="col" style="border: thin solid black">@Html.DisplayFor(modelitem => item.Title)<br />
-                       <p>• @Html.DisplayFor(modelitem => item.Description)</p>
-                       <p>• Responsible: @Html.DisplayFor(modelitem => item.Responsible.Name)</p>
-                     <i class="fas fa-info-circle" title="View Details" onclick="location.href='@Url.Action("ViewTask","Task",new {id=item.Id})'"></i>
-                        </div>
-         </div>
-        }
-    }   
-  </div>
-
-  <div class="col-sm-2" style="border: thin solid black">On Hold
-    
-    @foreach(var item in Model.TasksList)
-    {
-      @if ((int)item.Progress==3)
-        {
-         <div class="row">
-         <div class="col" style="border: thin solid black">@Html.DisplayFor(modelitem => item.Title)<br />
-                      <p>• @Html.DisplayFor(modelitem => item.Description)</p>
-                      <p>• Responsible: @Html.DisplayFor(modelitem => item.Responsible.Name)</p>
-                     <i class="fas fa-info-circle" title="View Details" onclick="location.href='@Url.Action("ViewTask","Task",new {id=item.Id})'"></i>
-                        </div>
-         </div>
-        }
-    }   
-  </div>
-
-  <div class="col-sm-2" style="border: thin solid black">Closed
-    
-    @foreach(var item in Model.TasksList)
-    {
-      @if ((int)item.Progress==4)
-        {
-         <div class="row">
-         <div class="col" style="border: thin solid black">@Html.DisplayFor(modelitem => item.Title)<br />
-                      <p>• @Html.DisplayFor(modelitem => item.Description)</p>
-                      <p>• Responsible: @Html.DisplayFor(modelitem => item.Responsible.Name)</p>
-                     <i class="fas fa-info-circle" title="View Details" onclick="location.href='@Url.Action("ViewTask","Task",new {id=item.Id})'"></i>
-                        </div>
-         </div>
-        }
-    }   
-  </div>
-
 </div>
+
 
 <div id="OwnTasksPartialView">
 </div>
@@ -135,7 +74,6 @@ Board Creator: @Html.DisplayFor(model => model.CreatedByUser.Name) <br />
 @{
     var objectTest=new Kanban.Services.UserBoardServices(_userService,_boardService);
 }
-
 
 @if (objectTest.CheckIfAdmin(@Context.Session.GetString("_Email"),@Model.Id)==true)
 
@@ -157,6 +95,8 @@ Board Creator: @Html.DisplayFor(model => model.CreatedByUser.Name) <br />
 else
 {}
 
+
+
 <script src="~/Scripts/jquery-1.10.2.min.js"></script>
 
 <script type="text/javascript"></script>
@@ -174,6 +114,7 @@ else
             //loading partial view
             var id=@Model.Id;
             document.getElementById("allTasks").style.display="none";
+            document.getElementById("OwnTasksPartialView").style.display="block"
             jQuery.ajax({
                 url: '@Url.Action("ViewBoardWithLoggedUserTasks", "Board")',
                 type: "Get",
@@ -188,8 +129,11 @@ else
         }
         else
         {
+            debugger;
             var id=@Model.Id;
-            window.location='@Url.Action("ViewBoard", "Board")';
+            document.getElementById("allTasks").style.display="flex"
+            document.getElementById("OwnTasksPartialView").style.display="none"
+            //window.location='@Url.Action("ViewBoard", "Board")';
             jQuery.ajax({
                 url: '@Url.Action("ViewBoard", "Board")',
                 type: "Get",

@@ -1,4 +1,5 @@
 ﻿using Kanban.Models;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
 
 namespace Kanban.Services.Interfaces
@@ -13,5 +14,7 @@ namespace Kanban.Services.Interfaces
         public List<Task> GetTasksOfLoggedUser(Board board, string userEmail);
         Task GetTaskById(int id);
         Task EditTask(Task task);
+
+        public IEnumerable<SelectListItem> GetTaskStatusesByBoardId(int boardId);
     }
 }

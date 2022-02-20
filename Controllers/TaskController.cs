@@ -4,6 +4,7 @@ using Kanban.Services.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 
 namespace Kanban.Controllers
 {
@@ -27,7 +28,8 @@ namespace Kanban.Controllers
         {
             Task task = new Task();
             board = _boardService.GetBoardById(board.Id);
-            task.Board = board;
+            task.Board = board; 
+            task.TaskStatuses=_taskService.GetTaskStatusesByBoardId(board.Id);
             return View(task);
         }
 
@@ -47,10 +49,13 @@ namespace Kanban.Controllers
                 {
                     //features to add: Check if user is on board before adding task / afisare task creator la ViewTask
                     newTask.Responsible = _userService.GetUserByEmail(task.Responsible.EmailAdress);
-                    newTask.Progress = task.Progress;
+                    newTask.Status = task.Status;
                     newTask.CreatedBy = _userService.GetUserByEmail(HttpContext.Session.GetString("_Email"));
                     newTask.Board= _boardService.GetBoardById(task.Board.Id);
+                    newTask.TaskStatuses = _taskService.GetTaskStatusesByBoardId(task.Board.Id);
+                    
                     _taskService.AddTask(newTask);
+                    newTask.Board.TasksList = _taskService.GetTasksByBoardId(task.Board);
                     Console.WriteLine("Bravo");
                     return View("Views/Board/ViewBoard.cshtml", newTask.Board);
                 }

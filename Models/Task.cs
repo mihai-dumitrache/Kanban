@@ -1,7 +1,10 @@
 ﻿using Kanban.Models.Enums;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+
 
 namespace Kanban.Models
 {
@@ -17,7 +20,9 @@ namespace Kanban.Models
 
         public TaskPriority Priority { get; set; }
 
-        public Progress Progress { get; set; }
+
+        //de schimbat in tabel Status
+        public Status Status { get; set; }
 
         public User CreatedBy { get; set; }
 
@@ -27,6 +32,8 @@ namespace Kanban.Models
 
         public DateTime ClosingDate { get; set; }
 
+        [NotMapped]
+        public IEnumerable<SelectListItem> TaskStatuses { get; set; }
 
     }
 }

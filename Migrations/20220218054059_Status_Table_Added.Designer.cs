@@ -4,14 +4,16 @@ using Kanban.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Kanban.Migrations
 {
     [DbContext(typeof(MyContext))]
-    partial class MyContextModelSnapshot : ModelSnapshot
+    [Migration("20220218054059_Status_Table_Added")]
+    partial class Status_Table_Added
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,28 +45,6 @@ namespace Kanban.Migrations
                     b.HasIndex("CreatedByUserId");
 
                     b.ToTable("Boards");
-                });
-
-            modelBuilder.Entity("Kanban.Models.BoardTaskStatus", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("BoardId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("StatusId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BoardId");
-
-                    b.HasIndex("StatusId");
-
-                    b.ToTable("BoardTaskStatus");
                 });
 
             modelBuilder.Entity("Kanban.Models.Status", b =>
@@ -191,21 +171,6 @@ namespace Kanban.Migrations
                         .HasForeignKey("CreatedByUserId");
 
                     b.Navigation("CreatedByUser");
-                });
-
-            modelBuilder.Entity("Kanban.Models.BoardTaskStatus", b =>
-                {
-                    b.HasOne("Kanban.Models.Board", "Board")
-                        .WithMany()
-                        .HasForeignKey("BoardId");
-
-                    b.HasOne("Kanban.Models.Status", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusId");
-
-                    b.Navigation("Board");
-
-                    b.Navigation("Status");
                 });
 
             modelBuilder.Entity("Kanban.Models.Task", b =>

@@ -63,6 +63,7 @@ namespace Kanban.Services
                                    .Include(x => x.UserBoards)
                                    .Where(x => x.Id == boardId)
                                    .FirstOrDefault<Board>();
+            board.BoardTaskStatuses = _context.BoardTaskStatus.Where(x => x.Board.Id == boardId).Include(x => x.Status).Include(x => x.Board).ToList();
             return board;
         }
 
@@ -77,12 +78,34 @@ namespace Kanban.Services
             return updatedBoard;
         }
 
+        public Board AddBoardTaskStatus(Board board)
+        {
+           
+            for (int i = 1; i <= 5; i++)
+            {
+                BoardTaskStatus boardTaskStatus = new BoardTaskStatus();
+                _context.Entry(boardTaskStatus).State = EntityState.Detached;
+                boardTaskStatus.Board = board;
+                boardTaskStatus.Status = _context.TaskStatus.Where(x => x.Id == i).FirstOrDefault();
+                _context.Add<BoardTaskStatus>(boardTaskStatus);
+                _context.SaveChanges();
+            }
+            
+            board.BoardTaskStatuses = _context.BoardTaskStatus.Where(x => x.Id == board.Id).Include(x => x.Status).ToList();
+            return board;
+        }
+
         public void DeleteBoard(Board board)
         {
             _context.UserBoards.RemoveRange(_context.UserBoards.Where(x => x.Board.Id == board.Id));
+            _context.BoardTaskStatus.RemoveRange(_context.BoardTaskStatus.Where(x => x.Board.Id == board.Id));
             _context.Entry(board).State = EntityState.Deleted;
             _context.SaveChanges();
         }
+
+       
+            
+         
 
     }
 }
