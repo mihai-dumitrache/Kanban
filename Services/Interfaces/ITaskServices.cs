@@ -12,6 +12,7 @@ namespace Kanban.Services.Interfaces
         public Board GetBoardByTaskId(int taskId);
 
         public List<Task> GetTasksOfLoggedUser(Board board, string userEmail);
+        public List<Task> GetAllTasksOfLoggedUser(string userEmail);
         Task GetTaskById(int id);
         Task EditTask(Task task);
 

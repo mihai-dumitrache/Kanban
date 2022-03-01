@@ -70,6 +70,13 @@ namespace Kanban.Services
             return tasksList;
         }
 
+        public List<Task> GetAllTasksOfLoggedUser(string userEmail)
+        {
+            List<Task> tasksList = new List<Task>();
+            tasksList = _context.Tasks.Where(x => x.Responsible.EmailAdress == userEmail).Include(x => x.Responsible).Include(x => x.Status).Include(x => x.Board).ToList();
+            return tasksList;
+        }
+
         public Task GetTaskById(int id)
         {
             Task task = new Task();

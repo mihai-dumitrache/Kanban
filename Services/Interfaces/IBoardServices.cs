@@ -20,7 +20,14 @@ namespace Kanban.Services.Interfaces
 
         public void DeleteBoard(Board board);
 
-        public Board AddBoardTaskStatus(Board board);
+        public Board AddBoardTaskStatus(Board board, List<Status> boardTaskStatuses);
+
+        public List<Status> GetDefaultTaskStatuses();
+
+        public List<string> GetBoardTaskStatusesName(string taskStatuses);
+
+        public List<Status> GetTaskStatusesList(List<string> taskStatuses);
+
 
     }
 }

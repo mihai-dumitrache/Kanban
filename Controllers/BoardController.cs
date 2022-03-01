@@ -141,7 +141,12 @@ namespace Kanban.Controllers
             userboard.Board = newBoard;
             userboard.User = _userService.GetUserByEmail(HttpContext.Session.GetString("_Email"));
             userboard.IsAdmin = true;
-            
+
+            List<string> taskStatuses = _boardService.GetBoardTaskStatusesName(board.taskStatuses);
+            List<Status> boardTaskStatuses = new List<Status>();
+            boardTaskStatuses = _boardService.GetTaskStatusesList(taskStatuses);
+            //newBoard._boardService.GetAllTaskStatuses(board.taskStatuses)
+
             if (newBoard.Title == null)
             {
                 ModelState.AddModelError("NoBoardName", "Board must contain a title!");
@@ -151,13 +156,16 @@ namespace Kanban.Controllers
             {
                 _boardService.AddBoard(newBoard);
                 _userBoardService.AddUserBoard(userboard);
-                _boardService.AddBoardTaskStatus(newBoard);
+                _boardService.AddBoardTaskStatus(newBoard, boardTaskStatuses);
                 return RedirectToAction("Index");
             }
 
         }
 
-        
+        public List<Status> GetDefaultTaskStatuses()
+        {
+           return _boardService.GetDefaultTaskStatuses(); 
+        }
 
     }
 

@@ -46,7 +46,7 @@
 
         <div class="form-group">
         <label asp-for="Responsible.EmailAdress" class="control-label"><b>Task Responsible</b></label>
-        </i><input asp-for="Responsible.EmailAdress" class="form-control" type="text" placeholder="Insert Task Responsible" id="txtResponsible" /><i class="fa fa-user" type="button" value="@Context.Session.GetString("_Email")" id="ownUser" onclick="chooseOwn()"></i>
+        <input asp-for="Responsible.EmailAdress" class="form-control" type="text" placeholder="Insert Task Responsible" id="txtResponsible" /><i class="fa fa-user" type="button" value="@Context.Session.GetString("_Email")" id="ownUser" onclick="chooseOwn()"></i>
         <hr><br />
         <div class="has-error">
             @Html.ValidationMessage("UserNotOnBoard")

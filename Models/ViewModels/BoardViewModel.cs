@@ -11,5 +11,7 @@ namespace Kanban.Models.ViewModels
 
         public string UserEmail { get; set; }
 
+        public string taskStatuses { get; set; }
+
     }
 }

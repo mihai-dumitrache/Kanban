@@ -29,8 +29,12 @@
 
         <div class="form-group">
         <label asp-for="ProjectStatus" class="control-label"><b>Project Status</b></label>
-        <input asp-for="ProjectStatus" class="form-control" type="text" id="projectstatus" />
-        <hr><br />
+        <select asp-for="ProjectStatus" id="Status">
+            <option value=@Model.ProjectStatus selected disabled hidden>@Model.ProjectStatus</option>
+            <option value="InWork">In Work</option>
+            <option value="OnHold">On Hold</option>
+            <option value="Closed">Closed</option>
+        </select> <br />
         </div>
 
         @Html.HiddenFor(model => model.Id)

@@ -1,13 +1,18 @@
 ﻿@using Kanban.Models.ViewModels
 @using Microsoft.AspNetCore.Http
+@using Kanban.Services
+@inject Kanban.Services.Interfaces.IBoardServices _boardService
 @*
     For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 @model BoardViewModel
+<script src="https://kit.fontawesome.com/d5cb6dbe34.js" crossorigin="anonymous"></script>
 @{
     ViewData["Title"] = "Board";
 }
 <h1>@ViewData["Title"]</h1>
+
+
 
 
 @*<form action="action_page.php">*@
@@ -22,14 +27,14 @@
         <div class="form-group">
         <label asp-for="Title" class="control-label"><b>Project Name</b></label>
         <input asp-for="Title" class="form-control" type="text" placeholder="Enter project name" id="project" /> <br />
-        <div class="has-error">
-            @Html.ValidationMessage("NoBoardName")
+            <div class="has-error">
+                @Html.ValidationMessage("NoBoardName")
+            </div>
         </div>
 
         <div class="form-group">
         <label asp-for="Status"><b>Project status</b></label>
         <select asp-for="Status" id="Status">
-            @* <optgroup label="InWork"></optgroup>*@
             <option value="" selected disabled hidden>Choose status</option>
             <option value="InWork">In Work</option>
             <option value="OnHold">On Hold</option>
@@ -42,10 +47,8 @@
         <input asp-for="Description" class="form-control" type="text" placeholder="Insert Description" id="txtDescription" />
         <hr><br />
         </div>
-
-        
-
-        
+  
+        <input asp-for="taskStatuses" type="hidden" id="taskStatusesArray[]"/>
 
         <button type="submit" class="btn btn-default">Add board</button>
 
@@ -53,5 +56,104 @@
 
 
 </form>
+
+
+
+<div id="container">
+    <input type="text" id="taskStatuses" name="taskStatuses">  <i class="fa-solid fa-circle-plus" type="button" onclick="addTaskStatus()"></i>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script type="text/javascript"></script>
+
+<script>
+    function populateWithDefaultStatuses()
+    {
+        debugger;
+        const defaultTaskStatuses=[];
+        $.ajax({
+                url: '@Url.Action("GetDefaultTaskStatuses", "Board")',
+                type: "Get",
+                dataType: 'json',
+                async: false,
+                success: function (data) {
+                        $.each(data,function(index){
+                        defaultTaskStatuses[index]=data[index].statusName;
+                    })
+                },
+                failure: function (errMsg) {
+                alert(errMsg);
+                }
+            });
+    
+    return defaultTaskStatuses;
+        
+    };
+</script>
+
+<script>
+    debugger;
+    var taskStatusesLength=0;
+    var taskStatuses=[];
+    taskStatuses=populateWithDefaultStatuses();
+    for (var taskIndex=1;taskIndex<=taskStatuses.length;taskIndex++)
+    {
+            var labelTitle=taskIndex;
+            var node=document.createElement('div');
+            node.id='test'+taskIndex;
+            node.innerHTML = '<i class="fa-regular fa-circle-xmark" id="button' +taskIndex+ '" type="button" onclick="deleteTaskStatus('+taskIndex+')"></i><label id="label' + taskIndex + '" name="label' + taskIndex + '">'+ '\xa0\xa0\xa0' + taskStatuses[taskIndex-1] +'</label>';       
+            document.getElementById('container').appendChild(node); 
+    };
+
+    document.getElementById("taskStatusesArray[]").value=taskStatuses;
+
+    function addTaskStatus(){
+        debugger;
+        
+        if (document.getElementById("taskStatuses").value!='')
+        {
+            taskStatusesLength=taskStatuses.length+1;
+            taskStatuses.push(document.getElementById("taskStatuses").value);
+            var labelTitle=document.getElementById("taskStatuses").value;
+            var node=document.createElement('div');
+            node.id='test'+taskStatusesLength;
+            node.innerHTML = '<i class="fa-regular fa-circle-xmark" id="button' +taskStatusesLength+ '" type="button" onclick="deleteTaskStatus('+taskStatusesLength+')"></i><label id="label' + taskStatusesLength + '" name="label' + taskStatusesLength + '">'+ '\xa0\xa0\xa0' + document.getElementById("taskStatuses").value +'</label>';       
+            document.getElementById('container').appendChild(node); 
+            document.getElementById("taskStatusesArray[]").value=taskStatuses;
+        };
+        
+    };
+  
+</script>
+
+<script>
+    function deleteTaskStatus(taskStatusesLength)
+    {
+        debugger;
+        var labelName='label'+taskStatusesLength;
+        var buttonName='button'+taskStatusesLength;
+        var divName='test'+taskStatusesLength;
+        
+        
+        if (taskStatusesLength==1 && taskStatuses.length==1){
+            document.getElementById(divName).remove();
+        };
+        taskStatuses.splice(taskStatusesLength-1,1);
+        for (var taskStatusesIndex=1;taskStatusesIndex<=taskStatuses.length;taskStatusesIndex++)
+        {
+            var reasignedDiv='test'+taskStatusesIndex;
+            var reasignedLabel='label'+taskStatusesIndex;
+            document.getElementById(reasignedDiv).innerHTML="";
+            document.getElementById(reasignedDiv).innerHTML='<i class="fa-regular fa-circle-xmark" id="button' +taskStatusesIndex+ '" type="button" onclick="deleteTaskStatus('+taskStatusesIndex+')"></i><label id="label' + taskStatusesIndex + '" name="label' + taskStatusesIndex + '">'+ '\xa0\xa0\xa0' + taskStatuses[taskStatusesIndex-1] +'</label>';
+           
+        };
+        reasignedDiv='test'+taskStatusesIndex;
+        document.getElementById(reasignedDiv).remove();
+        document.getElementById("taskStatusesArray[]").value=taskStatuses;
+    }
+</script>
+
+
 
 

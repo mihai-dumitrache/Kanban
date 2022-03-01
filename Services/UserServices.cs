@@ -18,6 +18,7 @@ namespace Kanban.Services
         {
             _context = new MyContext();
         }
+
         public User GetUserByEmail(string userEmail)
         {
             User user = new User();

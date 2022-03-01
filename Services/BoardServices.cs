@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Web.Mvc;
 using X.PagedList;
 
 namespace Kanban.Services
@@ -78,15 +79,15 @@ namespace Kanban.Services
             return updatedBoard;
         }
 
-        public Board AddBoardTaskStatus(Board board)
+        public Board AddBoardTaskStatus(Board board, List<Status> boardTaskStatuses)
         {
            
-            for (int i = 1; i <= 5; i++)
+            for (int boardTaskStatusesIndex = 0; boardTaskStatusesIndex < boardTaskStatuses.Count(); boardTaskStatusesIndex++)
             {
                 BoardTaskStatus boardTaskStatus = new BoardTaskStatus();
                 _context.Entry(boardTaskStatus).State = EntityState.Detached;
                 boardTaskStatus.Board = board;
-                boardTaskStatus.Status = _context.TaskStatus.Where(x => x.Id == i).FirstOrDefault();
+                boardTaskStatus.Status = boardTaskStatuses[boardTaskStatusesIndex];
                 _context.Add<BoardTaskStatus>(boardTaskStatus);
                 _context.SaveChanges();
             }
@@ -103,9 +104,47 @@ namespace Kanban.Services
             _context.SaveChanges();
         }
 
-       
-            
-         
+        public List<Status> GetDefaultTaskStatuses()
+        {
+            List<Status> defaultTaskStatuses = _context.TaskStatus.Where(x => x.DefaultStatus == true).ToList();
+            return defaultTaskStatuses;
+        }
+
+        public List<string> GetBoardTaskStatusesName(string taskStatuses)
+        {
+            List<string> taskStatusesList=new List<string>();
+            int commaIndex = taskStatuses.IndexOf(',');
+            while(commaIndex!=-1)
+            {
+                taskStatusesList.Add(taskStatuses.Substring(0, commaIndex));
+                taskStatuses = taskStatuses.Substring(commaIndex+1);
+                commaIndex = taskStatuses.IndexOf(',');
+            }
+            taskStatusesList.Add(taskStatuses);
+            return taskStatusesList;
+        }
+
+        public List<Status> GetTaskStatusesList(List<string> taskStatuses)
+        {
+            List<Status> taskStatusesList=new List<Status>(); 
+            for (int taskStatusesListIndex=0;taskStatusesListIndex<taskStatuses.Count;taskStatusesListIndex++)
+            {
+                if (_context.TaskStatus.Where(x => x.StatusName == taskStatuses[taskStatusesListIndex]).FirstOrDefault()!=null)
+                {
+                    taskStatusesList.Add(_context.TaskStatus.Where(x => x.StatusName == taskStatuses[taskStatusesListIndex]).FirstOrDefault());
+                }
+                else
+                {
+                    Status newStatus=new Status();
+                    newStatus.StatusName=taskStatuses[taskStatusesListIndex];
+                    newStatus.DefaultStatus = false;
+                    _context.Add<Status>(newStatus);
+                    _context.SaveChanges();
+                    taskStatusesList.Add(newStatus);
+                }
+            }
+            return taskStatusesList;
+        }
 
     }
 }
