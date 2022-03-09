@@ -35,6 +35,7 @@ namespace Kanban
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
+            services.AddHttpContextAccessor();
             services.AddSingleton<IHttpContextAccessor,HttpContextAccessor>();
             services.AddControllersWithViews();
             services.AddScoped<IBoardServices,BoardServices>();

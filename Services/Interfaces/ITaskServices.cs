@@ -1,6 +1,9 @@
-﻿using Kanban.Models;
+﻿using DocumentFormat.OpenXml.Packaging;
+using DocumentFormat.OpenXml.Spreadsheet;
+using Kanban.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Kanban.Services.Interfaces
 {
@@ -17,5 +20,8 @@ namespace Kanban.Services.Interfaces
         Task EditTask(Task task);
 
         public IEnumerable<SelectListItem> GetTaskStatusesByBoardId(int boardId);
+        public MemoryStream OpenAndAddToSpreadsheetStream(string templatePath, string reportType, Board board);
+
+        public List<Task> GetAllTasksOfLoggedUserFromActiveBoard(Board board, string userEmail);
     }
 }

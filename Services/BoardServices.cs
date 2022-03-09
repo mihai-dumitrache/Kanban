@@ -60,10 +60,14 @@ namespace Kanban.Services
             Board board = new Board();
             board = _context.Boards
                                    .Include(x => x.CreatedByUser)
-                                   .Include(x => x.TasksList)
                                    .Include(x => x.UserBoards)
                                    .Where(x => x.Id == boardId)
                                    .FirstOrDefault<Board>();
+            board.TasksList = _context.Tasks.Where(x => x.Board.Id == boardId)
+                                            .Include(x => x.Status)
+                                            .Include(x => x.Board)
+                                            .Include(x => x.CreatedBy)
+                                            .Include(x => x.Responsible).ToList();
             board.BoardTaskStatuses = _context.BoardTaskStatus.Where(x => x.Board.Id == boardId).Include(x => x.Status).Include(x => x.Board).ToList();
             return board;
         }

@@ -38,6 +38,17 @@ Board Creator: @Html.DisplayFor(model => model.CreatedByUser.Name) <br />
 
 <p style="top:23%;left:18%">Only my tasks<input type="checkbox" class="form-check-input" style="top:20%;left:22%" id="myTasks" name="myTasks" value="true" onclick="validate()" /></p>
 
+<select id="ExportType" style="position:absolute;top:11.6%;left:50%;">
+            <option value="" selected disabled hidden>Choose report type</option>
+            <option value="MyTasks">My Tasks from this Board</option>
+            <option value="AllTasks">All Tasks from this Board</option>
+        </select> <br />
+<button type="button" class="font-family" onclick="generateReport()" style="font-family:Verdana;background-color: #efefef;font-size:105%;height:2.8%;position:absolute;top:11.5%;left:65%;right:0%;padding:0%;text-align:center;border-radius:4%;width:10%;"><i class="far fa-plus-square"><i style="font-family:sans-serif;font-style:normal"> Export My Tasks </i></i></button>
+
+<div class="has-error">
+            @Html.ValidationMessage("NoChosenOption")
+        </div>
+
 <div id="allTasks" class="row" style="display:flex" >
    
         @foreach (var statusType in Model.BoardTaskStatuses)
@@ -97,9 +108,36 @@ else
 
 
 
-<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+@*<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+*@
+@*<script type="text/javascript"></script>*@
 
-<script type="text/javascript"></script>
+<script>
+    function generateReport(){
+        var reportType = document.getElementById("ExportType").value;
+        var boardId=@Model.Id;
+            jQuery.ajax({
+                url: '@Url.Action("TasksExport", "Task")',
+                type: "Get",
+                xhrFields: {
+                    responseType: 'blob'},
+                data: {boardId:boardId,reportType: reportType},
+                success: function (data) {
+                    var a = document.createElement('a');
+                    var url = window.URL.createObjectURL(data);
+                    a.href = url;
+                    a.download = 'Report.xlsx';
+                    document.body.append(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                },
+                failure: function (errMsg) {
+                alert(errMsg);
+                }
+            });
+    }
+</script>
 
 <script>
     debugger;

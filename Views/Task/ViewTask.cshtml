@@ -10,9 +10,10 @@
 
 Task Name: @Html.DisplayFor(model => model.Title) <br />
 Task Description: @Html.DisplayFor(model => model.Description) <br />
-Task Status: @Html.DisplayFor(model => model.Status) <br />
+Task Status: @Html.DisplayFor(model => model.Status.StatusName) <br />
 Task Creator: @Html.DisplayFor(model => model.CreatedBy.Name) <br />
 Task Responsible: @Html.DisplayFor(model => model.Responsible.Name)<br />
+Task Creation Date: @Html.DisplayFor(model => model.CreationDate.Day).@Html.DisplayFor(model => model.CreationDate.Month).@Html.DisplayFor(model => model.CreationDate.Year)<br />
 
 @Html.HiddenFor(model => model.Board)
 

@@ -18,7 +18,6 @@ namespace Kanban.Services.Interfaces
 
         public string DecodeFrom64(string password);
 
-        //public List<User> GetAllUsers();
 
     }
 }
