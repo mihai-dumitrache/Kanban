@@ -72,8 +72,30 @@ namespace Kanban.Services
             return board;
         }
 
-        public Board EditBoard(Board board)
+        public Board EditBoard(Board board,string taskStatuses)
         {
+            if(GetBoardTaskStatusesName(taskStatuses)==null)
+            { return null; }
+            List<string> updatedTaskStatusesNames = GetBoardTaskStatusesName(taskStatuses);
+            List<Status> updatedStatuses= GetTaskStatusesList(updatedTaskStatusesNames);
+            board=GetBoardById(board.Id);
+            for (int boardTaskStatusIndex = 0; boardTaskStatusIndex < board.BoardTaskStatuses.Count; boardTaskStatusIndex++)
+            {
+                if (updatedStatuses.Contains(board.BoardTaskStatuses[boardTaskStatusIndex].Status)==false)
+                {
+                    _context.BoardTaskStatus.RemoveRange(_context.BoardTaskStatus.Where(x => x.Board.Id == board.Id).Where(x => x.Status == board.BoardTaskStatuses[boardTaskStatusIndex].Status));
+                }
+            }
+            for (int updatedTaskStatusIndex=0;updatedTaskStatusIndex<updatedStatuses.Count; updatedTaskStatusIndex++)
+            {
+                if (_context.BoardTaskStatus.Where(x => x.Board.Id == board.Id).Where(x => x.Status == updatedStatuses[updatedTaskStatusIndex]).FirstOrDefault() == null)
+                {
+                    BoardTaskStatus updatedBoardTaskStatus = new BoardTaskStatus();
+                    updatedBoardTaskStatus.Board = board;
+                    updatedBoardTaskStatus.Status = updatedStatuses[updatedTaskStatusIndex];
+                    _context.Add<BoardTaskStatus>(updatedBoardTaskStatus);
+                }
+            }
             Board updatedBoard = new Board();
             updatedBoard = _context.Boards.SingleOrDefault(x => x.Id == board.Id);
             updatedBoard.Title = board.Title;
@@ -117,6 +139,8 @@ namespace Kanban.Services
         public List<string> GetBoardTaskStatusesName(string taskStatuses)
         {
             List<string> taskStatusesList=new List<string>();
+            if (taskStatuses==null)
+            { return null; }
             int commaIndex = taskStatuses.IndexOf(',');
             while(commaIndex!=-1)
             {
@@ -148,6 +172,13 @@ namespace Kanban.Services
                 }
             }
             return taskStatusesList;
+        }
+
+        public List<Status> GetTaskStatusesOfBoard(int boardId)
+        {
+            List<Status> taskStatuses=new List<Status>();
+            taskStatuses = _context.BoardTaskStatus.Where(x => x.Board.Id == boardId).Select(x => x.Status).ToList();
+            return taskStatuses;
         }
 
     }

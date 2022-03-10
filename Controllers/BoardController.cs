@@ -102,16 +102,22 @@ namespace Kanban.Controllers
             return View(board);
         }
 
-        public IActionResult EditBoard(Board board, string sortOrder, string searchString)
+        public IActionResult EditBoard(Board board, string sortOrder, string searchString, string taskStatuses)
         {
             Console.WriteLine("Bravo");
-            _boardService.EditBoard(board);
+            
+            if (_boardService.EditBoard(board,taskStatuses)==null)
+            {
+                ModelState.AddModelError("NoTaskStatus", "You must have at least 1 Task Status!");
+                return View("Views/Board/UpdateBoard.cshtml",board);
+            }
+            _boardService.EditBoard(board, taskStatuses);
             IEnumerable<Board> boardList = _boardService.GetBoardsByUser(_userService.GetUserByEmail(HttpContext.Session.GetString("_Email")));
             if (!String.IsNullOrEmpty(searchString))
             {
                 boardList = boardList.Where(s => s.Title.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) >= 0);
             }
-            return View("Views/Board/Index.cshtml", boardList);
+            return RedirectToAction("Index");
         }
 
         public IActionResult DeleteBoard(Board board, string sortOrder, string searchString)
@@ -165,6 +171,11 @@ namespace Kanban.Controllers
         public List<Status> GetDefaultTaskStatuses()
         {
            return _boardService.GetDefaultTaskStatuses(); 
+        }
+
+        public List<Status> GetBoardTaskStatuses(int boardId)
+        {
+            return _boardService.GetTaskStatusesOfBoard(boardId);
         }
 
     }

@@ -8,7 +8,7 @@
 }
 <h1>@ViewData["Title"]</h1>
 
-
+<script src="https://kit.fontawesome.com/d5cb6dbe34.js" crossorigin="anonymous"></script>
 
 @*<form action="action_page.php">*@
 @*action=nume metoda din controller*@
@@ -40,9 +40,146 @@
         @Html.HiddenFor(model => model.Id)
         @Html.HiddenFor(model => model.CreatedByUser.Name)
 
-        <button type="submit" class="btn btn-default">Update Board</button>
+        <input name="taskStatuses" type="hidden" id="taskStatusesArray[]"/>
+
+        <input type="text" class="form-control" id="taskStatuses" name="taskStatuses" style="width:20%; display:inline-block" placeholder="Insert Task Status">  <i class="fa-solid fa-circle-plus fa-xl" style="display:inline-block;" type="button" onclick="addTaskStatus()"></i><br />
+        
+        <div id="container"></div>
+
+        <div class="has-error">
+            @Html.ValidationMessage("NoTaskStatus")
+        </div>
+
+        <button type="submit" class="btn btn-default" style="background-color:#f0e68c">Update Board</button>
 
     </div>
 
 
 </form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script type="text/javascript"></script>
+
+<script>
+    function populateWithBoardTaskStatuses()
+    {
+        debugger;
+        const boardTaskStatuses=[];
+        var boardId=@Model.Id;
+        $.ajax({
+                url: '@Url.Action("GetBoardTaskStatuses", "Board")',
+                type: "Get",
+                dataType: 'json',
+                data: {boardId: boardId},
+                async: false,
+                success: function (data) {
+                        $.each(data,function(index){
+                        boardTaskStatuses[index]=data[index].statusName;
+                    })
+                },
+                failure: function (errMsg) {
+                alert(errMsg);
+                }
+            });
+    
+    return boardTaskStatuses;
+        
+    };
+</script>
+
+<script>
+    debugger;
+    var taskStatusesLength=0;
+    var taskStatuses=[];
+    var taskStatusesCounter=null;
+    var boardId=@Model.Id;
+    taskStatuses=populateWithBoardTaskStatuses();
+    for (var taskIndex=1;taskIndex<=taskStatuses.length;taskIndex++)
+    {
+        //code added from here
+        $.ajax({
+                url: '@Url.Action("CountTasksWithStatusType", "Task")',
+                type: "Get",
+                dataType: 'json',
+                data: {boardId: boardId,taskStatusName: taskStatuses[taskIndex-1]},
+                async: false,
+                success: function (data) {
+                        taskStatusesCounter=data;
+                },
+                failure: function (errMsg) {
+                alert(errMsg);
+                }
+            });
+
+            if (taskStatusesCounter>0)
+            {
+            var labelTitle=taskIndex;
+            var node=document.createElement('div');
+            node.id='status'+taskIndex;
+            node.innerHTML = '<i class="fa-regular fa-circle-xmark" style="visibility:hidden" id="button' +taskIndex+ '" type="button" onclick="deleteTaskStatus('+taskIndex+')"></i><label id="label' + taskIndex + '" name="label' + taskIndex + '">'+ '\xa0\xa0\xa0' + taskStatuses[taskIndex-1] +'</label>';       
+            document.getElementById('container').appendChild(node);
+            }
+            else
+            {
+        //to here
+            var labelTitle=taskIndex;
+            var node=document.createElement('div');
+            node.id='status'+taskIndex;
+            node.innerHTML = '<i class="fa-regular fa-circle-xmark" id="button' +taskIndex+ '" type="button" onclick="deleteTaskStatus('+taskIndex+')"></i><label id="label' + taskIndex + '" name="label' + taskIndex + '">'+ '\xa0\xa0\xa0' + taskStatuses[taskIndex-1] +'</label>';       
+            document.getElementById('container').appendChild(node);             
+            }
+    };
+
+    document.getElementById("taskStatusesArray[]").value=taskStatuses;
+
+    function addTaskStatus(){
+        debugger;
+        
+        if (document.getElementById("taskStatuses").value!='')
+        {
+            taskStatusesLength=taskStatuses.length+1;
+            taskStatuses.push(document.getElementById("taskStatuses").value);
+            var labelTitle=document.getElementById("taskStatuses").value;
+            var node=document.createElement('div');
+            node.id='status'+taskStatusesLength;
+            node.innerHTML = '<i class="fa-regular fa-circle-xmark" id="button' +taskStatusesLength+ '" type="button" onclick="deleteTaskStatus('+taskStatusesLength+')"></i><label id="label' + taskStatusesLength + '" name="label' + taskStatusesLength + '">'+ '\xa0\xa0\xa0' + document.getElementById("taskStatuses").value +'</label>';       
+            document.getElementById('container').appendChild(node); 
+            document.getElementById("taskStatusesArray[]").value=taskStatuses;
+        };
+        
+    };
+  
+</script>
+
+<script>
+    function deleteTaskStatus(taskStatusesLength)
+    {
+        debugger;
+        var labelName='label'+taskStatusesLength;
+        var buttonName='button'+taskStatusesLength;
+        var divName='status'+taskStatusesLength;
+        
+        
+        if (taskStatusesLength==1 && taskStatuses.length==1){
+            document.getElementById(divName).remove();
+            taskStatuses=null;
+            document.getElementById("taskStatusesArray[]").value=taskStatuses;
+        }
+        else
+        {
+        taskStatuses.splice(taskStatusesLength-1,1);
+        for (var taskStatusesIndex=1;taskStatusesIndex<=taskStatuses.length;taskStatusesIndex++)
+        {
+            var reasignedDiv='status'+taskStatusesIndex;
+            var reasignedLabel='label'+taskStatusesIndex;
+            document.getElementById(reasignedDiv).innerHTML="";
+            document.getElementById(reasignedDiv).innerHTML='<i class="fa-regular fa-circle-xmark" id="button' +taskStatusesIndex+ '" type="button" onclick="deleteTaskStatus('+taskStatusesIndex+')"></i><label id="label' + taskStatusesIndex + '" name="label' + taskStatusesIndex + '">'+ '\xa0\xa0\xa0' + taskStatuses[taskStatusesIndex-1] +'</label>';
+           
+        };
+        reasignedDiv='status'+taskStatusesIndex;
+        document.getElementById(reasignedDiv).remove();
+        document.getElementById("taskStatusesArray[]").value=taskStatuses;
+        }
+    }
+</script>

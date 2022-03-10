@@ -20,8 +20,10 @@ namespace Kanban.Services.Interfaces
         Task EditTask(Task task);
 
         public IEnumerable<SelectListItem> GetTaskStatusesByBoardId(int boardId);
-        public MemoryStream OpenAndAddToSpreadsheetStream(string templatePath, string reportType, Board board);
+        public MemoryStream OpenAndAddToSpreadsheetStream(string reportType, Board board);
 
         public List<Task> GetAllTasksOfLoggedUserFromActiveBoard(Board board, string userEmail);
+
+        public int CountTasksWithStatusType(string taskStatusName,int boardId);
     }
 }

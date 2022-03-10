@@ -14,7 +14,7 @@ namespace Kanban.Services.Interfaces
         public IPagedList<Board> GetBoardsByUser(User user);
         Board GetBoardById(int boardId);
 
-        Board EditBoard(Board board);
+        Board EditBoard(Board board, string taskStatuses);
 
         public IPagedList<Board> GetBoardsWhereAdmin(User user, bool isAdmin);
 
@@ -28,6 +28,7 @@ namespace Kanban.Services.Interfaces
 
         public List<Status> GetTaskStatusesList(List<string> taskStatuses);
 
+        public List<Status> GetTaskStatusesOfBoard(int boardId);
 
     }
 }

@@ -7,104 +7,133 @@
 @model Kanban.Models.Board
 
 @*
-    Forleftformation on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+    Forcontentleftn enabling MVCalign-contenty projecttopt https://go.microsoft.com/fwlink/?LinkID=397860
 *@
 
 <script src="https://kit.fontawesome.com/d5cb6dbe34.js" crossorigin="anonymous"></script>
 <script>
-function allowDrop(ev) {
-  ev.preventDefault();
-}
+    function allowDrop(ev) {
+      ev.preventDefault();
+    }
 
-function drag(ev) {
-  ev.dataTransfer.setData("text", ev.target.id);
-}
+    function drag(ev) {
+      ev.dataTransfer.setData("text", ev.target.id);
+    }
 
-function drop(ev) {
-  ev.preventDefault();
-  var data = ev.dataTransfer.getData("text");
-  ev.target.appendChild(document.getElementById(data));
-}
+    function drop(ev) {
+      ev.preventDefault();
+      var data = ev.dataTransfer.getData("text");
+      ev.target.appendChild(document.getElementById(data));
+    }
 </script>
 
 <h1>@ViewData["Board"]</h1>
 
-Board Name: @Html.DisplayFor(model => model.Title) <br />
-Board Description: @Html.DisplayFor(model => model.Description) <br />
-Board Status: @Html.DisplayFor(model => model.ProjectStatus) <br />
-Board Creator: @Html.DisplayFor(model => model.CreatedByUser.Name) <br />
+Board Name: @Html.DisplayFor(model => model.Title)
+<br />
+Board Description: @Html.DisplayFor(model => model.Description)
+<br />
+Board Status: @Html.DisplayFor(model => model.ProjectStatus)
+<br />
+Board Creator: @Html.DisplayFor(model => model.CreatedByUser.Name)
+<br />
 @Html.HiddenFor(model => model.Id, new{id="boardId"})
 @Html.HiddenFor(model => model.UserBoards)
 
-<p style="top:23%;left:18%">Only my tasks<input type="checkbox" class="form-check-input" style="top:20%;left:22%" id="myTasks" name="myTasks" value="true" onclick="validate()" /></p>
+<div id="element1">
+    <label style="top:23%;left:18%;display:inline-block;">Only my tasks&nbsp;
+        @*<div id="element2" class="child">*@
+        <input type="checkbox" class="form-check-input" style="display:inline-block;margin-left:auto;vertical-align:middle;" id="myTasks" name="myTasks" value="true" onclick="validate()" >
+        @*</div>*@
+    </label>
+</div>
+
+
+
+
+
 
 <select id="ExportType" style="position:absolute;top:11.6%;left:50%;">
-            <option value="" selected disabled hidden>Choose report type</option>
-            <option value="MyTasks">My Tasks from this Board</option>
-            <option value="AllTasks">All Tasks from this Board</option>
-        </select> <br />
+    <option value="" selected disabled hidden>Choose report type</option>
+    <option value="MyTasks">My Tasks from this Board</option>
+    <option value="AllTasks">All Tasks from this Board</option>
+</select>
+<br />
 <button type="button" class="font-family" onclick="generateReport()" style="font-family:Verdana;background-color: #efefef;font-size:105%;height:2.8%;position:absolute;top:11.5%;left:65%;right:0%;padding:0%;text-align:center;border-radius:4%;width:10%;"><i class="far fa-plus-square"><i style="font-family:sans-serif;font-style:normal"> Export My Tasks </i></i></button>
 
 <div class="has-error">
-            @Html.ValidationMessage("NoChosenOption")
-        </div>
+    @Html.ValidationMessage("NoChosenOption")
+</div>
 
-<div id="allTasks" class="row" style="display:flex" >
-   
-        @foreach (var statusType in Model.BoardTaskStatuses)
-        {
-            
-            <div class="col" style="border: thin solid black;display:table-group-column">@Html.DisplayFor(model => statusType.Status.StatusName) @*</div>*@
-            
+<div id="allTasks" class="row" style="display:flex">
+
+    @foreach (var statusType in Model.BoardTaskStatuses)
+    {
+
+        <div class="col" style="border: thin solid black;display:table-group-column">
+            @Html.DisplayFor(model => statusType.Status.StatusName) @*</div>*@
+
             @foreach (var item in Model.TasksList)
             {
                 @if (item.Status.Id == statusType.Status.Id)
                 {
-                    
+
                     <div class="row" style="border: thin solid black;display:table-group-row">
-                        <div class="col" style="display:table-column"  ondrop="drop(event)" ondragover="allowDrop(event)" draggable="true" ondragstart="drag(event)">@Html.DisplayFor(modelitem => item.Title)<br />
+                        <div class="col" style="display:table-column" ondrop="drop(event)" ondragover="allowDrop(event)" draggable="true" ondragstart="drag(event)">
+                            @Html.DisplayFor(modelitem => item.Title)<br />
                             <p>• @Html.DisplayFor(modelitem => item.Description)</p>
-                            <p>• Responsible: @Html.DisplayFor(modelitem => item.Responsible.Name)</p>
-                            <i class="fas fa-info-circle"  title="View Details" onclick="location.href='@Url.Action("ViewTask","Task",new {id=item.Id})'"></i>
+                            @if (item.Responsible!=null && String.IsNullOrEmpty(item.Responsible.Name) == false)
+                            {
+                                <p>• Responsible: @Html.DisplayFor(modelitem => item.Responsible.Name)</p> 
+                                                                                             
+                            }
+                            else
+                            {
+                                <p>• Responsible: &lt;not set&gt;</p>
+                            }
+                            
+                            @*<p>• Responsible: @Html.DisplayFor(modelitem => item.Responsible.Name)</p>*@
+                            <i class="fas fa-info-circle" title="View Details" onclick="location.href='@Url.Action("ViewTask","Task",new {id=item.Id})'"></i>
                         </div>
                     </div>
-                    
+
                 }
             }
-            </div>
-            
-        }
+        </div>
+
+    }
 </div>
 
 
 <div id="OwnTasksPartialView">
 </div>
 
-<button type="submit" style="background-color: #4CAF60" onclick="location.href='@Url.Action("Index","Task",new {id=Model.Id})'" >Add Task</button>
+<br />
+<button type="submit" style="background-color: #4CAF60" onclick="location.href='@Url.Action("Index","Task",new {id=Model.Id})'">Add Task</button>
 
 @{
-    var objectTest=new Kanban.Services.UserBoardServices(_userService,_boardService);
+    var objectTest = new Kanban.Services.UserBoardServices(_userService, _boardService);
 }
 
-@if (objectTest.CheckIfAdmin(@Context.Session.GetString("_Email"),@Model.Id)==true)
+@if (objectTest.CheckIfAdmin(@Context.Session.GetString("_Email"), @Model.Id) == true)
 
 {
-<form asp-controller="User" asp-action="AddUserToBoard" method="post">
-    <div class="form-group">
-        <label name="userEmail" class="control-label">Add user to board</label>
-        <input name="userEmail" class="form-control" type="email" placeholder="Insert User Email" id="userEmail"  />
-        <hr><br />
+    <form asp-controller="User" asp-action="AddUserToBoard" method="post">
+        <div class="form-group">
+            <label name="userEmail" class="control-label">Add user to board</label>
+            <input name="userEmail" class="form-control" type="email" placeholder="Insert User Email" id="userEmail" />
         </div>
-@Html.HiddenFor(model => model.Id)
-<div class="has-error">
+        <button type="submit" class="btn btn-default" style="background-color:#f0e68c">Add user</button>
+        @Html.HiddenFor(model => model.Id)
+        <div class="has-error">
             @Html.ValidationMessage("UserNotFound")
             @Html.ValidationMessage("UserHasAccess")
-            </div>
-<button type="submit" class="btn btn-default">Add user</button>
-</form>
+        </div>
+        
+    </form>
 }
 else
-{}
+{ }
 
 
 
@@ -147,8 +176,8 @@ else
         debugger;
         if (remember.checked)
         {
-            
-            
+
+
             //loading partial view
             var id=@Model.Id;
             document.getElementById("allTasks").style.display="none";
@@ -176,10 +205,10 @@ else
                 url: '@Url.Action("ViewBoard", "Board")',
                 type: "Get",
                 data: {id: id},
-                success: function (data) { 
-                debugger;    
+                success: function (data) {
+                debugger;
                 },
-                
+
                 failure: function (errMsg) {
                 alert(errMsg);
                 }

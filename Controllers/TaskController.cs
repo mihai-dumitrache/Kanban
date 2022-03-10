@@ -42,6 +42,13 @@ namespace Kanban.Controllers
             task.Board = _boardService.GetBoardById(task.Board.Id);
             UserBoard userBoard = new UserBoard();
             userBoard.Board = task.Board;
+            //code added from here
+            if (task.Responsible.EmailAdress==null)
+            {
+                _taskService.AddTask(task);
+                return View("Views/Board/ViewBoard.cshtml", task.Board);
+            }
+            //to here
             if (_userService.GetUserByEmail(task.Responsible.EmailAdress) != null)
             {
                 userBoard.User = _userService.GetUserByEmail(task.Responsible.EmailAdress);
@@ -52,7 +59,7 @@ namespace Kanban.Controllers
                 }
             }
             ModelState.AddModelError("UserNotOnBoard", "User has no access on board!");
-            return View("Views/Task/Index.cshtml");
+            return View("Views/Task/Index.cshtml",task);
         }
         public IActionResult ViewTask(Task task)
         {
@@ -64,6 +71,12 @@ namespace Kanban.Controllers
             UserBoard userBoard = new UserBoard();
             userBoard.Board = _taskService.GetBoardByTaskId(task.Id);
             task.CreatedBy = _taskService.GetTaskById(task.Id).CreatedBy;
+            if (task.Responsible.EmailAdress==null)
+            {
+                task = _taskService.EditTask(task);
+                task.Board.TasksList = _taskService.GetTasksByBoardId(task.Board);
+                return View("Views/Board/ViewBoard.cshtml", task.Board);
+            }
             if (_userService.CheckUserByEmail(task.Responsible.EmailAdress) == true)
             { userBoard.User = _userService.GetUserByEmail(task.Responsible.EmailAdress); }
             else {
@@ -92,28 +105,16 @@ namespace Kanban.Controllers
         public IActionResult TasksExport(int boardId, string reportType)
         {
             Board board=_boardService.GetBoardById(boardId);
-            if (reportType == "MyTasks")
+
+            MemoryStream memoryStream=new MemoryStream();
+
+            const string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+            if (reportType == "MyTasks" || reportType=="AllTasks")
             {
+               
+                memoryStream = _taskService.OpenAndAddToSpreadsheetStream(reportType, board);
                 
-                string templatePath =@"D:\C# Apps\00-Basic_Exercises\99-Kanban_App\Kanban\Resources\MyTasks.xlsx";
-
-                MemoryStream memoryStream = _taskService.OpenAndAddToSpreadsheetStream(templatePath, reportType, board);
-
-                const string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-
-                return new FileStreamResult(memoryStream, contentType);               
-                
-            }
-            else if (reportType == "AllTasks")
-            {
-                
-                string templatePath = @"D:\C# Apps\00-Basic_Exercises\99-Kanban_App\Kanban\Resources\AllTasks.xlsx";
-                MemoryStream memoryStream = _taskService.OpenAndAddToSpreadsheetStream(templatePath, reportType, board);
-
-                const string contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-
-                return new FileStreamResult(memoryStream, contentType);
-
             }
             else
             {
@@ -121,7 +122,13 @@ namespace Kanban.Controllers
                 return View(board);
             }
 
+            return new FileStreamResult(memoryStream, contentType);
 
+        }
+
+        public int CountTasksWithStatusType(string taskStatusName, int boardId)
+        {
+            return _taskService.CountTasksWithStatusType(taskStatusName,boardId);
         }
 
     }

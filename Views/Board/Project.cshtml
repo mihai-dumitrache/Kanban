@@ -45,23 +45,22 @@
         <div class="form-group">
         <label asp-for="Description" class="control-label"><b>Insert Description</b></label>
         <input asp-for="Description" class="form-control" type="text" placeholder="Insert Description" id="txtDescription" />
-        <hr><br />
+        <br />
         </div>
   
         <input asp-for="taskStatuses" type="hidden" id="taskStatusesArray[]"/>
 
-        <button type="submit" class="btn btn-default">Add board</button>
+        <input type="text" class="form-control" id="taskStatuses" name="taskStatuses" style="width:20%; display:inline-block" placeholder="Insert Task Status">  <i class="fa-solid fa-circle-plus fa-xl" style="display:inline-block;" type="button" onclick="addTaskStatus()"></i><br />
+        
+        <div id="container"></div>
+        
+        <button type="submit" class="btn btn-default" style="background-color:#f0e68c" id="addButton">Add board</button>
 
     </div>
 
 
 </form>
 
-
-
-<div id="container">
-    <input type="text" id="taskStatuses" name="taskStatuses">  <i class="fa-solid fa-circle-plus" type="button" onclick="addTaskStatus()"></i>
-</div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
@@ -101,7 +100,7 @@
     {
             var labelTitle=taskIndex;
             var node=document.createElement('div');
-            node.id='test'+taskIndex;
+            node.id='status'+taskIndex;
             node.innerHTML = '<i class="fa-regular fa-circle-xmark" id="button' +taskIndex+ '" type="button" onclick="deleteTaskStatus('+taskIndex+')"></i><label id="label' + taskIndex + '" name="label' + taskIndex + '">'+ '\xa0\xa0\xa0' + taskStatuses[taskIndex-1] +'</label>';       
             document.getElementById('container').appendChild(node); 
     };
@@ -117,7 +116,7 @@
             taskStatuses.push(document.getElementById("taskStatuses").value);
             var labelTitle=document.getElementById("taskStatuses").value;
             var node=document.createElement('div');
-            node.id='test'+taskStatusesLength;
+            node.id='status'+taskStatusesLength;
             node.innerHTML = '<i class="fa-regular fa-circle-xmark" id="button' +taskStatusesLength+ '" type="button" onclick="deleteTaskStatus('+taskStatusesLength+')"></i><label id="label' + taskStatusesLength + '" name="label' + taskStatusesLength + '">'+ '\xa0\xa0\xa0' + document.getElementById("taskStatuses").value +'</label>';       
             document.getElementById('container').appendChild(node); 
             document.getElementById("taskStatusesArray[]").value=taskStatuses;
@@ -133,7 +132,7 @@
         debugger;
         var labelName='label'+taskStatusesLength;
         var buttonName='button'+taskStatusesLength;
-        var divName='test'+taskStatusesLength;
+        var divName='status'+taskStatusesLength;
         
         
         if (taskStatusesLength==1 && taskStatuses.length==1){
@@ -142,13 +141,13 @@
         taskStatuses.splice(taskStatusesLength-1,1);
         for (var taskStatusesIndex=1;taskStatusesIndex<=taskStatuses.length;taskStatusesIndex++)
         {
-            var reasignedDiv='test'+taskStatusesIndex;
+            var reasignedDiv='status'+taskStatusesIndex;
             var reasignedLabel='label'+taskStatusesIndex;
             document.getElementById(reasignedDiv).innerHTML="";
             document.getElementById(reasignedDiv).innerHTML='<i class="fa-regular fa-circle-xmark" id="button' +taskStatusesIndex+ '" type="button" onclick="deleteTaskStatus('+taskStatusesIndex+')"></i><label id="label' + taskStatusesIndex + '" name="label' + taskStatusesIndex + '">'+ '\xa0\xa0\xa0' + taskStatuses[taskStatusesIndex-1] +'</label>';
            
         };
-        reasignedDiv='test'+taskStatusesIndex;
+        reasignedDiv='status'+taskStatusesIndex;
         document.getElementById(reasignedDiv).remove();
         document.getElementById("taskStatusesArray[]").value=taskStatuses;
     }

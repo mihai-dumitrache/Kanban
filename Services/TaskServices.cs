@@ -34,8 +34,24 @@ namespace Kanban.Services
                 task.Status = task.Board.BoardTaskStatuses[0].Status;
             }
             //Populate task object
-            task.Responsible = _userService.GetUserByEmail(task.Responsible.EmailAdress);
-            task.CreatedBy = _userService.GetUserByEmail(_contextAccessor.HttpContext.Session.GetString("_Email"));
+            //code added from here
+            if (task.Responsible == null)
+            {
+                task.Responsible = null;
+            }
+            //to here
+            else
+            {
+                task.Responsible = _userService.GetUserByEmail(task.Responsible.EmailAdress);
+            }
+            if (_userService.GetUserByEmail(_contextAccessor.HttpContext.Session.GetString("_Email")) != null)
+            {
+                task.CreatedBy = _userService.GetUserByEmail(_contextAccessor.HttpContext.Session.GetString("_Email")); 
+            }
+            else 
+            { 
+                task.CreatedBy = null; 
+            }
             task.TaskStatuses = GetTaskStatusesByBoardId(task.Board.Id);
             task.Status = _context.TaskStatus.Where(x => x.StatusName == task.Status.StatusName).AsNoTracking().FirstOrDefault();
             task.CreationDate = DateTime.Today.Date;
@@ -43,32 +59,39 @@ namespace Kanban.Services
             _context.Add<Task>(task);
             _context.Entry(task.Board.CreatedByUser).State = EntityState.Detached;
             _context.Entry(task.Board).State = EntityState.Detached;
-            _context.Entry(task.Responsible).State = EntityState.Detached;
+            if (task.Responsible != null)
+            {
+                _context.Entry(task.Responsible).State = EntityState.Detached;
+            }
             _context.Entry(task.CreatedBy).State = EntityState.Detached;
             _context.Entry(task.Status).State = EntityState.Detached;
 
-            for (int i = 0; i < task.Board.UserBoards.Count; i++)
+            for (int taskIndex = 0; taskIndex < task.Board.UserBoards.Count; taskIndex++)
             {
-                _context.Entry(task.Board.UserBoards[i]).State = EntityState.Detached;
+                _context.Entry(task.Board.UserBoards[taskIndex]).State = EntityState.Detached;
             }
-            for (int i = 0; i < task.Board.BoardTaskStatuses.Count; i++)
+            for (int taskIndex = 0; taskIndex < task.Board.BoardTaskStatuses.Count; taskIndex++)
             {
-                _context.Entry(task.Board.BoardTaskStatuses[i]).State = EntityState.Detached;
+                _context.Entry(task.Board.BoardTaskStatuses[taskIndex]).State = EntityState.Detached;
             }
-            for (int i = 0; i < task.Board.BoardTaskStatuses.Count; i++)
+            for (int taskIndex = 0; taskIndex < task.Board.BoardTaskStatuses.Count; taskIndex++)
             {
-                _context.Entry(task.Board.BoardTaskStatuses[i].Status).State = EntityState.Detached;
+                _context.Entry(task.Board.BoardTaskStatuses[taskIndex].Status).State = EntityState.Detached;
             }
-            for (int i = 0; i < task.Board.TasksList.Count; i++)
+            for (int taskIndex = 0; taskIndex < task.Board.TasksList.Count-1; taskIndex++)
             {
-                _context.Entry(task.Board.TasksList[i].Status).State = EntityState.Detached;
-                _context.Entry(task.Board.TasksList[i].Responsible).State = EntityState.Detached;
-                _context.Entry(task.Board.TasksList[i].CreatedBy).State = EntityState.Detached;
+                _context.Entry(task.Board.TasksList[taskIndex].Status).State = EntityState.Detached;
+                if (task.Board.TasksList[taskIndex].Responsible != null)
+                {
+                    _context.Entry(task.Board.TasksList[taskIndex].Responsible).State = EntityState.Detached;
+                }
+                _context.Entry(task.Board.TasksList[taskIndex].CreatedBy).State = EntityState.Detached;
+                _context.Entry(task.Board.TasksList[taskIndex]).State = EntityState.Detached;
             }
-            for (int i = 0; i < task.Board.TasksList.Count; i++)
-            {
-                _context.Entry(task.Board.TasksList[i]).State = EntityState.Detached;
-            }
+            //for (int taskIndex = 0; taskIndex < task.Board.TasksList.Count; taskIndex++)
+            //{
+            //    _context.Entry(task.Board.TasksList[taskIndex]).State = EntityState.Detached;
+            //}
 
             _context.SaveChanges();
             return 0;
@@ -134,6 +157,7 @@ namespace Kanban.Services
             {
                 task.Status = task.Board.BoardTaskStatuses[0].Status;
             }
+            
 
             Task updatedTask = new Task();
             updatedTask = _context.Tasks.Include(y => y.Board).SingleOrDefault(x => x.Id == task.Id);
@@ -141,10 +165,18 @@ namespace Kanban.Services
             updatedTask.Description = task.Description;
             updatedTask.Priority = task.Priority;
             updatedTask.Status = _context.TaskStatus.Where(x => x.StatusName == task.Status.StatusName).FirstOrDefault();
-            updatedTask.Responsible = _userService.GetUserByEmail(task.Responsible.EmailAdress);
+            if (task.Responsible.EmailAdress == null)
+            {
+                updatedTask.Responsible = null;
+            }
+            else
+            {
+                updatedTask.Responsible = _userService.GetUserByEmail(task.Responsible.EmailAdress);
+                _context.Entry(updatedTask.Responsible).State = EntityState.Detached;
+            }
             updatedTask.Board.BoardTaskStatuses = _context.BoardTaskStatus.Where(x => x.Board.Id == updatedTask.Board.Id).Include(x => x.Status).ToList();
             _context.Entry(updatedTask.CreatedBy).State = EntityState.Detached;
-            _context.Entry(updatedTask.Responsible).State = EntityState.Detached;
+            
             _context.SaveChanges();
             return updatedTask;
         }
@@ -157,15 +189,18 @@ namespace Kanban.Services
             return board;
         }
 
-        public MemoryStream OpenAndAddToSpreadsheetStream(string templatePath, string reportType, Board board)
+        public MemoryStream OpenAndAddToSpreadsheetStream(string reportType, Board board)
         {
             MemoryStream memoryStream = new MemoryStream();
             LoadOptions loadOptions=new LoadOptions();
             
-            using XLWorkbook workbook= new XLWorkbook(templatePath, loadOptions);
+            //using XLWorkbook workbook= new XLWorkbook(templatePath, loadOptions);
 
             if (reportType == "MyTasks")
             {
+                string templatePath = Directory.GetCurrentDirectory() + @"\Resources\MyTasks.xlsx";
+                using XLWorkbook workbook = new XLWorkbook(templatePath, loadOptions);
+
                 var worksheet = workbook.Worksheets.FirstOrDefault(ws => ws.Name == "MyTasks");
                 int currentRow = 2;
                 
@@ -189,6 +224,9 @@ namespace Kanban.Services
             }
             if (reportType == "AllTasks")
             {
+                string templatePath = Directory.GetCurrentDirectory() + @"\Resources\AllTasks.xlsx";
+                using XLWorkbook workbook = new XLWorkbook(templatePath, loadOptions);
+
                 var worksheet = workbook.Worksheets.FirstOrDefault(ws => ws.Name == "AllTasks");
                 int currentRow = 2;
 
@@ -201,7 +239,14 @@ namespace Kanban.Services
                     worksheet.Cell(currentRow, 2).Value = allBoardTasks[taskIndex].Board.Title;
                     worksheet.Cell(currentRow, 3).Value = allBoardTasks[taskIndex].Title;
                     worksheet.Cell(currentRow, 4).Value = allBoardTasks[taskIndex].Description;
-                    worksheet.Cell(currentRow, 5).Value = allBoardTasks[taskIndex].Responsible.Name;
+                    if (allBoardTasks[taskIndex].Responsible == null)
+                    {
+                        worksheet.Cell(currentRow, 5).Value = null;
+                    }
+                    else
+                    {
+                        worksheet.Cell(currentRow, 5).Value = allBoardTasks[taskIndex].Responsible.Name;
+                    }
                     currentRow = currentRow + 1;
                 }
 
@@ -215,5 +260,11 @@ namespace Kanban.Services
             return memoryStream;
         }
        
+        public int CountTasksWithStatusType(string taskStatusName,int boardId)
+        {
+            //Status status = _context.TaskStatus.Where(x => x.StatusName == taskStatusName).FirstOrDefault();
+            int taskCounter = _context.Tasks.Where(x => x.Status.StatusName == taskStatusName).Where(x => x.Board.Id == boardId).Count();
+            return taskCounter;
+        }
     }
 }
