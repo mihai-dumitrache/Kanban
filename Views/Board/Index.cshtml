@@ -15,10 +15,8 @@
 
 <button type="button" class="font-family" onclick="location.href='@Url.Action("Project","Board")'" style="font-family:Verdana;background-color: #efefef;font-size:105%;height:3.8%;position:absolute;top:17.5%;left:65%;right:0%;padding:0%;text-align:center;border-radius:4%;width:10%;"><i class="far fa-plus-square"><i style="font-family:sans-serif;font-style:normal"> Add New Board</i></i></button>
 
-
-
 <form name="myform" asp-controller="Board" asp-action="Index" method='GET'>
-    <label>Search for a board:</label>
+    <label media="prefers-color-scheme: dark" class="font-styling">Search for a board:</label>
     <input type='text' name='searchString' />
     <button type='submit' name='submit' value='submit' style="border-radius:20%"><i class="fas fa-search-plus"></i></button>
 </form>
@@ -27,7 +25,7 @@
 
 <p style="display:inline-block;">Only Boards where admin&nbsp;<input type="checkbox" class="form-check-input" style="display:inline-block;margin-left:auto;" id="boardsWithAdmin" name="boardsWithAdmin" value="true" onclick="validate()" /></p>
 
-<table class="table" id="initialTable">
+<table class="table background" id="initialTable">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.FirstOrDefault().Title)
@@ -54,7 +52,7 @@
                 @Html.DisplayFor(modelItem => item.CreatedByUser.Name)
             </td>
             <td>
-                <i class="fas fa-eye" title="View" style="color:#00FF00" onclick="location.href='@Url.Action("ViewBoard","Board",new {id=item.Id})'"></i>
+                <i class="fas fa-eye view-board-button" title="View" onclick="location.href='@Url.Action("ViewBoard","Board",new {id=item.Id})'"></i>
             </td>
             <td>
                 <i class="fas fa-edit" title="Edit" style="color:#1E90FF" onclick="location.href='@Url.Action("UpdateBoard","Board",new {id=item.Id})'"></i>

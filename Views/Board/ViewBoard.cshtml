@@ -11,6 +11,15 @@
 *@
 
 <script src="https://kit.fontawesome.com/d5cb6dbe34.js" crossorigin="anonymous"></script>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Kanban</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+
 <script>
     function allowDrop(ev) {
       ev.preventDefault();
@@ -29,13 +38,13 @@
 
 <h1>@ViewData["Board"]</h1>
 
-Board Name: @Html.DisplayFor(model => model.Title)
+<b>Board Name</b>: @Html.DisplayFor(model => model.Title)
 <br />
-Board Description: @Html.DisplayFor(model => model.Description)
+<b>Board Description</b>: @Html.DisplayFor(model => model.Description)
 <br />
-Board Status: @Html.DisplayFor(model => model.ProjectStatus)
+<b>Board Status</b>: @Html.DisplayFor(model => model.ProjectStatus)
 <br />
-Board Creator: @Html.DisplayFor(model => model.CreatedByUser.Name)
+<b>Board Creator</b>: @Html.DisplayFor(model => model.CreatedByUser.Name)
 <br />
 @Html.HiddenFor(model => model.Id, new{id="boardId"})
 @Html.HiddenFor(model => model.UserBoards)
@@ -109,7 +118,7 @@ Board Creator: @Html.DisplayFor(model => model.CreatedByUser.Name)
 </div>
 
 <br />
-<button type="submit" style="background-color: #4CAF60" onclick="location.href='@Url.Action("Index","Task",new {id=Model.Id})'">Add Task</button>
+<button type="submit" class="btn btn-default add-button" onclick="location.href='@Url.Action("Index","Task",new {id=Model.Id})'">Add Task</button>
 
 @{
     var objectTest = new Kanban.Services.UserBoardServices(_userService, _boardService);

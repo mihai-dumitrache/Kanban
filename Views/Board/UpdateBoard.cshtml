@@ -159,27 +159,49 @@
         var labelName='label'+taskStatusesLength;
         var buttonName='button'+taskStatusesLength;
         var divName='status'+taskStatusesLength;
-        
-        
-        if (taskStatusesLength==1 && taskStatuses.length==1){
-            document.getElementById(divName).remove();
-            taskStatuses=null;
-            document.getElementById("taskStatusesArray[]").value=taskStatuses;
-        }
-        else
-        {
-        taskStatuses.splice(taskStatusesLength-1,1);
-        for (var taskStatusesIndex=1;taskStatusesIndex<=taskStatuses.length;taskStatusesIndex++)
-        {
-            var reasignedDiv='status'+taskStatusesIndex;
-            var reasignedLabel='label'+taskStatusesIndex;
-            document.getElementById(reasignedDiv).innerHTML="";
-            document.getElementById(reasignedDiv).innerHTML='<i class="fa-regular fa-circle-xmark" id="button' +taskStatusesIndex+ '" type="button" onclick="deleteTaskStatus('+taskStatusesIndex+')"></i><label id="label' + taskStatusesIndex + '" name="label' + taskStatusesIndex + '">'+ '\xa0\xa0\xa0' + taskStatuses[taskStatusesIndex-1] +'</label>';
+        var taskStatusesCounter=null;
+        var boardId=@Model.Id; 
+            if (taskStatusesLength==1 && taskStatuses.length==1)
+            {
+                document.getElementById(divName).remove();
+                taskStatuses=null;
+                document.getElementById("taskStatusesArray[]").value=taskStatuses;
+            }
+            else
+            {
+            taskStatuses.splice(taskStatusesLength-1,1);
+                for (var taskStatusesIndex=1;taskStatusesIndex<=taskStatuses.length;taskStatusesIndex++)
+                {
+                    $.ajax({
+                        url: '@Url.Action("CountTasksWithStatusType", "Task")',
+                        type: "Get",
+                        dataType: 'json',
+                        data: {boardId: boardId,taskStatusName: taskStatuses[taskStatusesIndex-1]},
+                        async: false,
+                        success: function (data) {
+                                taskStatusesCounter=data;
+                        },
+                        failure: function (errMsg) {
+                        alert(errMsg);
+                        }
+                    });
+                    var reasignedDiv='status'+taskStatusesIndex;
+                    var reasignedLabel='label'+taskStatusesIndex;
+                    document.getElementById(reasignedDiv).innerHTML="";
+                    if (taskStatusesCounter>0)
+                    {
+                    document.getElementById(reasignedDiv).innerHTML='<i class="fa-regular fa-circle-xmark" style="visibility:hidden" id="button' +taskStatusesIndex+ '" type="button" onclick="deleteTaskStatus('+taskStatusesIndex+')"></i><label id="label' + taskStatusesIndex + '" name="label' + taskStatusesIndex + '">'+ '\xa0\xa0\xa0' + taskStatuses[taskStatusesIndex-1] +'</label>';
+                    }
+                    else
+                    {
+                    document.getElementById(reasignedDiv).innerHTML='<i class="fa-regular fa-circle-xmark" id="button' +taskStatusesIndex+ '" type="button" onclick="deleteTaskStatus('+taskStatusesIndex+')"></i><label id="label' + taskStatusesIndex + '" name="label' + taskStatusesIndex + '">'+ '\xa0\xa0\xa0' + taskStatuses[taskStatusesIndex-1] +'</label>';
+                    }
            
-        };
-        reasignedDiv='status'+taskStatusesIndex;
-        document.getElementById(reasignedDiv).remove();
-        document.getElementById("taskStatusesArray[]").value=taskStatuses;
-        }
+                };
+            reasignedDiv='status'+taskStatusesIndex;
+            document.getElementById(reasignedDiv).remove();
+            document.getElementById("taskStatusesArray[]").value=taskStatuses;
+            }
+    //}
     }
 </script>

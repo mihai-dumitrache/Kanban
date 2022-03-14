@@ -69,3 +69,74 @@ body {
   white-space: nowrap;
   line-height: 60px; /* Vertically center the text there */
 }
+
+.add-button {
+    background-color: #f0e68c
+}
+
+@media (prefers-color-scheme: light)
+{
+    .font-styling {
+        color: black;
+    }
+
+    .logout-label {
+        background-color: white;
+        color: black;
+        position: absolute;
+        right: 20px;
+        display: inline-block;
+        top: 10px;
+    }
+
+    .logout-user {
+        background-color: white;
+        color: black;
+        text-decoration: underline;
+        display: inline-block;
+        margin-left: 10px;
+        padding-right: 10px;
+    }
+    .navbar {
+        color: black;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .navbar {
+        background-color: black;
+        color: yellow;
+    }
+    body {
+        background-color: black;
+        color: yellow;
+    }
+    .background {
+        background-color: black;
+        color: yellow;
+    }
+    .font-styling {
+        color: yellow;
+    }
+    .logout-label {
+        background-color: black;
+        color: yellow;
+        position: absolute;
+        right: 20px;
+        display: inline-block;
+        top: 10px;
+    }
+    .logout-user {
+        background-color: black;
+        color: yellow;
+        text-decoration: underline;
+        display: inline-block;
+        margin-left: 10px;
+        padding-right: 10px;
+    }
+
+    .view-board-button {
+        color:greenyellow;
+    }
+
+}
