@@ -5,6 +5,13 @@
 
 @model IPagedList<Kanban.Models.Board>
 
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Kanban</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
 
 @{
     ViewData["Title"] = "Boards";
@@ -13,17 +20,19 @@
 
 <script src="https://kit.fontawesome.com/d5cb6dbe34.js" crossorigin="anonymous"></script>
 
-<button type="button" class="font-family" onclick="location.href='@Url.Action("Project","Board")'" style="font-family:Verdana;background-color: #efefef;font-size:105%;height:3.8%;position:absolute;top:17.5%;left:65%;right:0%;padding:0%;text-align:center;border-radius:4%;width:10%;"><i class="far fa-plus-square"><i style="font-family:sans-serif;font-style:normal"> Add New Board</i></i></button>
+<button type="button" class="adding-button" onclick="location.href='@Url.Action("Project","Board")'" style="position:relative;top:30px;left:950px;border-radius:4px;"><i class="far fa-plus-square"><i style="font-family:sans-serif;font-style:normal"> Add New Board</i></i></button>
 
 <form name="myform" asp-controller="Board" asp-action="Index" method='GET'>
-    <label media="prefers-color-scheme: dark" class="font-styling">Search for a board:</label>
-    <input type='text' name='searchString' />
-    <button type='submit' name='submit' value='submit' style="border-radius:20%"><i class="fas fa-search-plus"></i></button>
+    @*<label media="prefers-color-scheme: dark" class="font-styling ">Search for a board:</label>*@
+    <input type='text' class="form-control" name='searchString' style="width:200px;display:inline-block;" placeholder="Search for a board" /> 
+    <button type='submit' class="adding-button" name='submit' value='submit' style="display:inline-block;width:35px;height:35px;">
+        <i class="fas fa-search-plus adding-button"></i>
+     </button>
 </form>
 
 
 
-<p style="display:inline-block;">Only Boards where admin&nbsp;<input type="checkbox" class="form-check-input" style="display:inline-block;margin-left:auto;" id="boardsWithAdmin" name="boardsWithAdmin" value="true" onclick="validate()" /></p>
+<p style="display:inline-block;position:relative;top:10px;">Only Boards where admin&nbsp;<input type="checkbox" class="form-check-input" style="display:inline-block;margin-left:auto;" id="boardsWithAdmin" name="boardsWithAdmin" value="true" onclick="validate()" /></p>
 
 <table class="table background" id="initialTable">
     <tr>

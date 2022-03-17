@@ -42,15 +42,15 @@
 
         <input name="taskStatuses" type="hidden" id="taskStatusesArray[]"/>
 
-        <input type="text" class="form-control" id="taskStatuses" name="taskStatuses" style="width:20%; display:inline-block" placeholder="Insert Task Status">  <i class="fa-solid fa-circle-plus fa-xl" style="display:inline-block;" type="button" onclick="addTaskStatus()"></i><br />
+        <input type="text" class="form-control" id="taskStatuses" name="taskStatuses" style="width:20%; display:inline-block;position:relative;top:10px;" placeholder="Insert Task Status">  <i class="fa-solid fa-circle-plus fa-xl" style="display:inline-block;position:relative;top:10px;" type="button" onclick="addTaskStatus()"></i><br />
         
-        <div id="container"></div>
+        <div id="container" style="position:relative;top:15px;"></div>
 
         <div class="has-error">
             @Html.ValidationMessage("NoTaskStatus")
         </div>
 
-        <button type="submit" class="btn btn-default" style="background-color:#f0e68c">Update Board</button>
+        <button type="submit" class="btn btn-default adding-button" style="position:relative;top:23px;">Update Board</button>
 
     </div>
 

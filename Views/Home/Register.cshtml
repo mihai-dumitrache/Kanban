@@ -6,6 +6,15 @@
 }
 <h1>@ViewData["Title"]</h1>
 
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Kanban</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+
+
 <p>Use this page to create a user.</p>
 
 <form asp-controller="User" asp-action="AddUser" method="post">
@@ -20,7 +29,7 @@
         <div class="form-group">
         <label asp-for="Password" class="control-label"><b>Password</b></label>
         <input asp-for="Password" class="form-control" type="password" placeholder="Create Password" id="txtPassword" />
-        <hr><br />
+        <br />
             <div class="has-error">
             @Html.ValidationMessage("EmailAlreadyUsed")
             </div>
@@ -29,14 +38,14 @@
         <div class="form-group">
         <label asp-for="PhoneNumber" class="control-label"><b>Phone Number</b></label>
         <input asp-for="PhoneNumber" class="form-control" type="text" id="txtPhoneNumber" />
-        <hr><br />
+        <br />
         </div>
 
         <div class="form-group">
         <label asp-for="EmailAdress" class="control-label"><b>Email Address</b></label>
         <input asp-for="EmailAdress" class="form-control" type="text" id="txtEmailAdress" />
-        <hr><br />
-        <hr><br />
+        <br />
+        <br />
             <div class="has-error">
             @Html.ValidationMessage("InvalidPassword")
             </div>
@@ -46,11 +55,11 @@
         <div class="form-group">
         <label asp-for="Position" class="control-label"><b>Position</b></label>
         <input asp-for="Position" class="form-control" type="text" id="txtPosition" placeholder="Enter job title of user" />
-        <hr><br />
+        <br />
         </div>
        
 
-        <button type="submit" class="btn btn-default">Add user</button>
+        <button type="submit" class="btn btn-default adding-button">Add user</button>
 
     
 

@@ -7,6 +7,14 @@
 @{
 }
 
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Kanban</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+
 <script src="https://kit.fontawesome.com/d5cb6dbe34.js" crossorigin="anonymous"></script>
 
 <form asp-action="AddTask" method="get">
@@ -24,7 +32,7 @@
         <div class="form-group">
         <label asp-for="Description" class="control-label"><b>Task Description</b></label>
         <input asp-for="Description" class="form-control" type="text" placeholder="Insert Task Description" id="txtDescription" />
-        <hr><br />
+        <br />
         </div>
 
         <div class="form-group">
@@ -38,16 +46,16 @@
         </div>
 
         <div class="form-group">
-        <label asp-for="Status.StatusName"><b>Task Status</b></label>
-        <select asp-for="Status.StatusName" asp-items="Model.TaskStatuses" id="Status">
+        <label asp-for="Status.StatusName" style="position:relative;top:12px;"><b>Task Status</b></label>
+        <select asp-for="Status.StatusName" asp-items="Model.TaskStatuses" id="Status" style="position:relative;top:12px;">
             <option value="" selected disabled hidden>Task Status</option>            
         </select> <br />
         </div>
 
         <div class="form-group">
-        <label asp-for="Responsible.EmailAdress" class="control-label"><b>Task Responsible</b></label>
-        <input asp-for="Responsible.EmailAdress" class="form-control" type="text" placeholder="Insert Task Responsible" id="txtResponsible" /><i class="fa fa-user" type="button" value="@Context.Session.GetString("_Email")" id="ownUser" onclick="chooseOwn()"></i>
-        <hr><br />
+        <label asp-for="Responsible.EmailAdress" class="control-label" style="position:relative;top:18px;"><b>Task Responsible</b></label><br />
+        <input asp-for="Responsible.EmailAdress" class="form-control" type="text" placeholder="Insert Task Responsible" id="txtResponsible" style="width:300px;display:inline-block;position:relative;top:18px;" /><i class="fa fa-user" type="button" value="@Context.Session.GetString("_Email")" style="display:inline-block;position:relative;top:18px;left:10px;height:40px;width:40px;" id="ownUser" onclick="chooseOwn()"></i>
+        <br />
         <div class="has-error">
             @Html.ValidationMessage("UserNotOnBoard")
         </div>
@@ -55,7 +63,7 @@
 
         @Html.HiddenFor(model => model.Board.Id)
 
-        <button type="submit" class="btn btn-default" style="background-color:#f0e68c">Add task</button>
+        <button type="submit" class="btn btn-default adding-button" style="position:relative;top:15px;">Add task</button>
 
     </div>
 

@@ -12,20 +12,20 @@
 
 @Html.HiddenFor(model => model.Id)
 
-<div id="allTasks" class="row"  >
+<div id="allTasks" class="row table-header" style="display:flex;" >
 
         @foreach (var statusType in Model.BoardTaskStatuses)
         {
-            <div class="col" style="border: thin solid black">@Html.DisplayFor(model => statusType.Status.StatusName) @*</div>*@
+            <div class="col table-column" style="">@Html.DisplayFor(model => statusType.Status.StatusName) @*</div>*@
             @foreach (var item in Model.TasksList)
             {
                 @if (item.Status.Id == statusType.Status.Id)
                 {
                     
-                    <div class="row" style="border: thin solid black">
+                    <div class="row row-for-task" style="">
                         <div class="col" ondrop="drop(event)" ondragover="allowDrop(event)" draggable="true" ondragstart="drag(event)">@Html.DisplayFor(modelitem => item.Title)<br />
                             <p>• @Html.DisplayFor(modelitem => item.Description)</p>
-                            <i class="fas fa-info-circle" title="View Details" onclick="location.href='@Url.Action("ViewTask","Task",new {id=item.Id})'"></i>
+                            <i class="fas fa-info-circle" title="View Details" style="position:relative;left:180px;bottom:4px;" onclick="location.href='@Url.Action("ViewTask","Task",new {id=item.Id})'"></i>
                         </div>
                     </div>
                     

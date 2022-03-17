@@ -44,7 +44,7 @@
         <div class="form-group">
         <label asp-for="Status"><b>Project status</b></label>
         <select asp-for="Status" id="Status">
-            <option value="" selected disabled hidden>Choose status</option>
+            <option value="" selected disabled hidden" >Choose status</option>
             <option value="InWork">In Work</option>
             <option value="OnHold">On Hold</option>
             <option value="Closed">Closed</option>
@@ -52,18 +52,19 @@
         </div>
 
         <div class="form-group">
-        <label asp-for="Description" class="control-label"><b>Insert Description</b></label>
-        <input asp-for="Description" class="form-control" type="text" placeholder="Insert Description" id="txtDescription" />
+        <label asp-for="Description" class="control-label" style="position:relative;top:10px;"><b>Insert Description</b></label>
+        <input asp-for="Description" class="form-control" type="text" placeholder="Description" id="txtDescription" style="position:relative;top:10px;" />
         <br />
         </div>
-  
+
+        <label asp-for="taskStatuses" class="control-label" style="position:relative;top:10px;"><b>Add Task Status</b></label><br />
         <input asp-for="taskStatuses" type="hidden" id="taskStatusesArray[]"/>
 
-        <input type="text" class="form-control" id="taskStatuses" name="taskStatuses" style="width:20%; display:inline-block" placeholder="Insert Task Status">  <i class="fa-solid fa-circle-plus fa-xl" style="display:inline-block;" type="button" onclick="addTaskStatus()"></i><br />
+        <input type="text" class="form-control" id="taskStatuses" name="taskStatuses" style="position:relative;top:10px;width:20%; display:inline-block" placeholder="Insert Task Status">  <i class="fa-solid fa-circle-plus fa-xl" style="display:inline-block;position:relative;top:9px;" type="button" onclick="addTaskStatus()"></i><br />
         
-        <div id="container"></div>
+        <div id="container" style="position:relative;top:15px;"></div>
         
-        <button type="submit" class="btn btn-default add-button" id="addButton">Add board</button>
+        <button type="submit" class="btn btn-default adding-button" id="addButton" style="position:relative;top:40px;">Add board</button>
 
     </div>
 

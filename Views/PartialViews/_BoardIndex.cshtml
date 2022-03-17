@@ -8,7 +8,8 @@
 
 @model IPagedList<Kanban.Models.Board>
 
-<table class="table">
+
+<table class="table background">
     <tr>
         <th>
             @Html.DisplayNameFor(model => model.FirstOrDefault().Title)
@@ -35,7 +36,7 @@
                 @Html.DisplayFor(modelItem => item.CreatedByUser.Name)
             </td>
             <td>
-                <i class="fas fa-eye" title="View" style="color:#00FF00" onclick="location.href='@Url.Action("ViewBoard","Board",new {id=item.Id})'"></i>
+                <i class="fas fa-eye view-board-button" title="View" onclick="location.href='@Url.Action("ViewBoard","Board",new {id=item.Id})'"></i>
             </td>
             <td>
                 <i class="fas fa-edit" title="Edit" style="color:#1E90FF" onclick="location.href='@Url.Action("UpdateBoard","Board",new {id=item.Id})'"></i>

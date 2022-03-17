@@ -50,9 +50,9 @@
 @Html.HiddenFor(model => model.UserBoards)
 
 <div id="element1">
-    <label style="top:23%;left:18%;display:inline-block;">Only my tasks&nbsp;
+    <label style="position:relative;top:0px;display:inline-block;"><b>Only my tasks&nbsp;</b>
         @*<div id="element2" class="child">*@
-        <input type="checkbox" class="form-check-input" style="display:inline-block;margin-left:auto;vertical-align:middle;" id="myTasks" name="myTasks" value="true" onclick="validate()" >
+        <input type="checkbox" class="form-check-input" style="display:inline-block;margin-left:auto;position:relative;top:1px;" id="myTasks" name="myTasks" value="true" onclick="validate()" >
         @*</div>*@
     </label>
 </div>
@@ -62,24 +62,24 @@
 
 
 
-<select id="ExportType" style="position:absolute;top:11.6%;left:50%;">
+<select id="ExportType" style="position:relative;bottom:100px;left:645px;">
     <option value="" selected disabled hidden>Choose report type</option>
     <option value="MyTasks">My Tasks from this Board</option>
     <option value="AllTasks">All Tasks from this Board</option>
 </select>
 <br />
-<button type="button" class="font-family" onclick="generateReport()" style="font-family:Verdana;background-color: #efefef;font-size:105%;height:2.8%;position:absolute;top:11.5%;left:65%;right:0%;padding:0%;text-align:center;border-radius:4%;width:10%;"><i class="far fa-plus-square"><i style="font-family:sans-serif;font-style:normal"> Export My Tasks </i></i></button>
+<button type="button" class="font-family adding-button" onclick="generateReport()" style="position:relative;bottom:125px;left:855px;text-align:center;border-radius:4px;"><i class="far fa-plus-square"><i style="font-family:sans-serif;font-style:normal"> Export My Tasks </i></i></button>
 
 <div class="has-error">
     @Html.ValidationMessage("NoChosenOption")
 </div>
 
-<div id="allTasks" class="row" style="display:flex">
+<div id="allTasks" class="row table-header" style="display:flex;">
 
     @foreach (var statusType in Model.BoardTaskStatuses)
     {
 
-        <div class="col" style="border: thin solid black;display:table-group-column">
+        <div class="col table-column" style="">
             @Html.DisplayFor(model => statusType.Status.StatusName) @*</div>*@
 
             @foreach (var item in Model.TasksList)
@@ -87,8 +87,8 @@
                 @if (item.Status.Id == statusType.Status.Id)
                 {
 
-                    <div class="row" style="border: thin solid black;display:table-group-row">
-                        <div class="col" style="display:table-column" ondrop="drop(event)" ondragover="allowDrop(event)" draggable="true" ondragstart="drag(event)">
+                    <div class="row row-for-task" style="">
+                        <div class="col" style="display:table-column;" ondrop="drop(event)" ondragover="allowDrop(event)" draggable="true" ondragstart="drag(event)">
                             @Html.DisplayFor(modelitem => item.Title)<br />
                             <p>• @Html.DisplayFor(modelitem => item.Description)</p>
                             @if (item.Responsible!=null && String.IsNullOrEmpty(item.Responsible.Name) == false)
@@ -102,7 +102,7 @@
                             }
                             
                             @*<p>• Responsible: @Html.DisplayFor(modelitem => item.Responsible.Name)</p>*@
-                            <i class="fas fa-info-circle" title="View Details" onclick="location.href='@Url.Action("ViewTask","Task",new {id=item.Id})'"></i>
+                            <i class="fas fa-info-circle" title="View Details" style="position:relative;left:180px;bottom:4px;" onclick="location.href='@Url.Action("ViewTask","Task",new {id=item.Id})'"></i>
                         </div>
                     </div>
 
@@ -118,7 +118,7 @@
 </div>
 
 <br />
-<button type="submit" class="btn btn-default add-button" onclick="location.href='@Url.Action("Index","Task",new {id=Model.Id})'">Add Task</button>
+<button type="submit" class="btn btn-default adding-button" style="border-radius:4px;position:relative;bottom:5px;" onclick="location.href='@Url.Action("Index","Task",new {id=Model.Id})'">Add Task</button>
 
 @{
     var objectTest = new Kanban.Services.UserBoardServices(_userService, _boardService);
@@ -129,10 +129,13 @@
 {
     <form asp-controller="User" asp-action="AddUserToBoard" method="post">
         <div class="form-group">
-            <label name="userEmail" class="control-label">Add user to board</label>
-            <input name="userEmail" class="form-control" type="email" placeholder="Insert User Email" id="userEmail" />
+            <label name="userEmail" class="control-label" style="position:relative;top:5px;">Add user to board</label>
+            <input name="userEmail" class="form-control" type="email" placeholder="Insert User Email" style="position:relative;top:15px;width:400px;" id="userEmail" />
+            
+            @*<button type="submit" class="btn btn-default adding-button" style="position:relative;top:20px;border-radius:4px;">Add user</button>*@
+            
         </div>
-        <button type="submit" class="btn btn-default" style="background-color:#f0e68c">Add user</button>
+        <button type="submit" class="btn btn-default adding-button" style="position:relative;border-radius:4px;left:420px;bottom:22px;">Add user</button>
         @Html.HiddenFor(model => model.Id)
         <div class="has-error">
             @Html.ValidationMessage("UserNotFound")

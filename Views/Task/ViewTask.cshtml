@@ -7,14 +7,21 @@
 @{
 }
 
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Kanban</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
 
-Task Name: @Html.DisplayFor(model => model.Title) <br />
-Task Description: @Html.DisplayFor(model => model.Description) <br />
-Task Status: @Html.DisplayFor(model => model.Status.StatusName) <br />
-Task Creator: @Html.DisplayFor(model => model.CreatedBy.Name) <br />
-Task Responsible: @Html.DisplayFor(model => model.Responsible.Name)<br />
-Task Creation Date: @Html.DisplayFor(model => model.CreationDate.Day).@Html.DisplayFor(model => model.CreationDate.Month).@Html.DisplayFor(model => model.CreationDate.Year)<br />
+<b>Task Name:</b> @Html.DisplayFor(model => model.Title) <br />
+<b>Task Description:</b> @Html.DisplayFor(model => model.Description) <br />
+<b>Task Status:</b> @Html.DisplayFor(model => model.Status.StatusName) <br />
+<b>Task Creator:</b> @Html.DisplayFor(model => model.CreatedBy.Name) <br />
+<b>Task Responsible:</b> @Html.DisplayFor(model => model.Responsible.Name)<br />
+<b>Task Creation Date:</b> @Html.DisplayFor(model => model.CreationDate.Day).@Html.DisplayFor(model => model.CreationDate.Month).@Html.DisplayFor(model => model.CreationDate.Year)<br />
 
 @Html.HiddenFor(model => model.Board)
 
-<button type="button" onclick="location.href='@Url.Action("UpdateTask","Task",new {id=Model.Id})'" style="background-color: #4CAF60">Update Task</button>
+<button type="button" class="adding-button" style="position:relative;top:10px;height:30px;" onclick="location.href='@Url.Action("UpdateTask","Task",new {id=Model.Id})'" >Update Task</button>
